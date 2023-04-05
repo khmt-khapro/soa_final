@@ -56,8 +56,8 @@ userSchema.pre("save", function (next) {
 })
 
 // method check password valid
-userSchema.methods.verifyPassword = function (inputPass, userPass) {
-  return bcrypt.compareSync(inputPass, userPass)
+userSchema.methods.verifyPassword = function (inputPwd, currentPwd) {
+  return bcrypt.compareSync(inputPwd, currentPwd)
 }
 
 const User = mongoose.model("Users", userSchema)

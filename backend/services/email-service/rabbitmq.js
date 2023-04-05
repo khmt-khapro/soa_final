@@ -1,13 +1,9 @@
 const amqp = require("amqplib")
+const { handleSendMailActivateAccount } = require("./mailer")
 
 const amqp_docker_url = "amqp://localhost"
 
 const sendMessageAMQP = async ({ message, queueName }) => {
-  console.log(
-    "🚀 ~ file: rabbitmq.js:6 ~ sendMessageAMQP ~ queueName:",
-    queueName
-  )
-  console.log("🚀 ~ file: rabbitmq.js:6 ~ sendMessageAMQP ~ message:", message)
   try {
     // create connection
     const connection = await amqp.connect(amqp_docker_url)
@@ -25,7 +21,7 @@ const sendMessageAMQP = async ({ message, queueName }) => {
   }
 }
 
-const receiveMessageAMQP = async ({ queueName }) => {
+const receiveMessageAMQP = async (queueName) => {
   try {
     // create connection
     const connection = await amqp.connect(amqp_docker_url)
@@ -40,7 +36,16 @@ const receiveMessageAMQP = async ({ queueName }) => {
     await chanel.consume(
       queueName,
       (message) => {
-        console.log("Consume message >>>>>>>>>>", message.content.toString())
+        const data = JSON.parse(message.content)
+        console.log(
+          "🚀 ~ file: rabbitmq.js:40 ~ receiveMessageAMQP ~ data:",
+          data
+        )
+
+        // check type to send mail
+        if (data.type === "activate_account") {
+          handleSendMailActivateAccount(data)
+        }
       },
       { noAck: true }
     )
@@ -49,4 +54,4 @@ const receiveMessageAMQP = async ({ queueName }) => {
   }
 }
 
-module.exports = { sendMessageAMQP }
+module.exports = { sendMessageAMQP, receiveMessageAMQP }

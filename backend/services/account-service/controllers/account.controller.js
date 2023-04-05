@@ -5,7 +5,7 @@ const { genJwtToken } = require("../utils/generateToken.js")
 const { sendMessageAMQP } = require("./rabbitmq.js")
 
 // -----------------------CREATE NEW USER-----------------------------------
-const REGISTER = async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
     const { username, email, password, fullname } = req.body
 
@@ -29,7 +29,7 @@ const REGISTER = async (req, res, next) => {
     )
 
     // response create account success
-    res.status(201).json({
+    res.status(200).json({
       status: "succes",
       message:
         "Create account succesfully, check your email to activate account",
@@ -38,35 +38,43 @@ const REGISTER = async (req, res, next) => {
     // message broker sendmail
     sendMessageAMQP({
       message: {
+        type: "activate_account",
+        recipient: email,
         activateToken,
       },
-      queueName: "account_created",
+      queueName: "email_queue",
     })
   } catch (error) {
     next(new BaseError(500, error.message))
   }
 }
 
-const ACTIVATE_ACCOUNT = async (req, res, next) => {
+//  --------------------- ACTIVATE ACCOUNT ------------------------------
+const activateAccount = async (req, res, next) => {
   try {
-    const { token } = req.body
-    if (!token) {
-      next(new BaseError(403, "Please provide token"))
+    const { id } = req.user
+    const user = await User.findById(id)
+
+    // check if already activated
+    if (user.status === "activated") {
+      return new (BaseError(400, "The link has been expire"))()
     }
 
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex")
-    const user = Token.findOne({ value: hashedToken })
-    console.log(
-      "🚀 ~ file: auth.controller.js:79 ~ constACTIVATE_ACCOUNT= ~ user:",
-      user
-    )
+    // activate
+    user.status = "activated"
+    await user.save()
+
+    res.status(201).json({
+      status: "succes",
+      message: "Your account has been activated, now can login",
+    })
   } catch (error) {
     next(new BaseError(500, error.message))
   }
 }
 
-// LOGIN
-const LOGIN = async (req, res, next) => {
+// ------------------- SIGNIN -------------------------------
+const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body
     const user = await User.findOne({ email }).select(
@@ -83,16 +91,14 @@ const LOGIN = async (req, res, next) => {
 
     // check accoutn state
     if (user.status === "pending") {
-      return next(
-        new BaseError(401, "Please active your account, check your email")
-      )
+      return next(new BaseError(401, "Please active your account first"))
     }
 
     // hide field in response
     user.password = undefined
     user.status = undefined
 
-    const accessToken = signAccessToken(user.id)
+    const accessToken = genJwtToken({ id: user.id }, "accessToken", "1h")
 
     res
       .status(200)
@@ -199,7 +205,7 @@ const UPDATE_PASSWORD = async (req, res, next) => {
 // };
 
 module.exports = {
-  REGISTER,
-  LOGIN,
-  ACTIVATE_ACCOUNT,
+  signup,
+  signin,
+  activateAccount,
 }

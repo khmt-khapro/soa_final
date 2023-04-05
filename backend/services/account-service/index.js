@@ -1,19 +1,19 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const initRoute = require("./routes/index.route");
-const BaseError = require("./utils/error-handling/baseError");
-require("dotenv").config();
+const express = require("express")
+const mongoose = require("mongoose")
+const bodyParser = require("body-parser")
+const cors = require("cors")
+const initRoute = require("./routes/index.route")
+const BaseError = require("./utils/error-handling/baseError")
+require("dotenv").config()
 
-const app = express();
-const PORT = process.env.PORT || 5001;
+const app = express()
+const PORT = process.env.PORT || 5001
 
-app.use(bodyParser.json({ limit: "10mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
-app.use(cors());
+app.use(bodyParser.json({ limit: "10mb", extended: true }))
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }))
+app.use(cors())
 
-initRoute(app);
+initRoute(app)
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -22,26 +22,26 @@ mongoose
     autoIndex: true,
   })
   .then(() => {
-    console.log("<<<<< Connected to database");
+    console.log("<<<<< Connected to database")
   })
   .catch((err) => {
-    console.log("🚀 ~ file: index.js:38 ~ err:", err);
-  });
+    console.log("🚀 ~ file: index.js:38 ~ err:", err)
+  })
 
 app.listen(PORT, () =>
-  console.log(`>>>>> Auth service is running on port ${PORT}}.`)
-);
+  console.log(`>>>>> Auth service is running on port ${PORT}.`)
+)
 
 // Catch All Unhandled Promise Rejections
 process.on("unhandledRejection", (error) => {
-  throw error;
-});
+  throw error
+})
 
 // Catch All Uncaught Exceptions
 process.on("uncaughtException", (error) => {
-  console.log("🚀 ~ file: index.js:43 ~ process.on ~ error:", error);
+  console.log("🚀 ~ file: index.js:43 ~ process.on ~ error:", error)
 
   if (!(error instanceof BaseError)) {
-    process.exit(1);
+    process.exit(1)
   }
-});
+})

@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken")
+require("dotenv").config()
 const { ACTIVATE_TOKEN_SECRET, RESET_TOKEN_SECRET, ACCESS_TOKEN_SECRET } =
   process.env
 
 const jwtSecretsType = {
-  accessToken: { secret: ACCESS_TOKEN_SECRET },
+  accessToken: ACCESS_TOKEN_SECRET,
   activateToken: ACTIVATE_TOKEN_SECRET,
   resetToken: RESET_TOKEN_SECRET,
 }
