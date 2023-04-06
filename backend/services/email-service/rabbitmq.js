@@ -1,5 +1,5 @@
 const amqp = require("amqplib")
-const { handleSendMailActivateAccount } = require("./mailer")
+const { handleSendMail } = require("./mailer")
 
 const amqp_docker_url = "amqp://localhost"
 
@@ -42,10 +42,8 @@ const receiveMessageAMQP = async (queueName) => {
           data
         )
 
-        // check type to send mail
-        if (data.type === "activate_account") {
-          handleSendMailActivateAccount(data)
-        }
+        // send mail with type
+        handleSendMail(data)
       },
       { noAck: true }
     )

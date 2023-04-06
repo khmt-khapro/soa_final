@@ -66,18 +66,36 @@ const send_mail = async (mailOptions) => {
   }
 }
 
-const handleSendMailActivateAccount = async (data) => {
-  try {
-    const mailOptions = {
+const getMailoptions = (data) => {
+  const mailOptionsList = {
+    activate_account: {
       from: "Mail service <khavmb123@gmail.com>",
       to: data.recipient,
-      subject: "Acctivate account",
+      subject: "Activate account",
       html: ` 
         <div>
             <p>Please activate your account to using social app</p>
             <a style="padding: 10px 20px; border-radius: 8px; background: #346bc2; color: white"  href='http://localhost:3000/activate?token=${data.activateToken}'> Click here </a>
         </div>`,
-    }
+    },
+    reset_password: {
+      from: "Mail service <khavmb123@gmail.com>",
+      to: data.recipient,
+      subject: "Forgot password",
+      html: ` 
+        <div>
+            <p>If you are forgot your password, click the button below to create new password. If not, ignore this email</p>
+            <a style="padding: 10px 20px; border-radius: 8px; background: #346bc2; color: white"  href='http://localhost:3000/forgot-password?token=${data.resetToken}'> Click here </a>
+        </div>`,
+    },
+  }
+
+  return mailOptionsList[data.type]
+}
+
+const handleSendMail = async (data) => {
+  try {
+    const mailOptions = getMailoptions(data)
 
     await send_mail(mailOptions)
   } catch (error) {
@@ -88,4 +106,4 @@ const handleSendMailActivateAccount = async (data) => {
   }
 }
 
-module.exports = { handleSendMailActivateAccount }
+module.exports = { handleSendMail }
