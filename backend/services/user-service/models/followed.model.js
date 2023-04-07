@@ -13,5 +13,5 @@ const followedSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Followed = mongoose.model("Followeds", followedSchema);
+const Followed = mongoose.model("Followed", followedSchema);
 module.exports = Followed;

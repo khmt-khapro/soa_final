@@ -13,7 +13,7 @@ const followingSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Following = mongoose.model("Followings", followingSchema);
+const Following = mongoose.model("Following", followingSchema);
 module.exports = Following;
 
 // {

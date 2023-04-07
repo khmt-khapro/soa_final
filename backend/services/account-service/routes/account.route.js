@@ -5,10 +5,13 @@ const {
     forgotPasswordSchema,
     activateAccountSchema,
     createNewPwdSchema,
+    changePasswordSchema,
+    updateProfileSchema,
 } = require("../utils/validate.js")
 const { celebrate, errors, Segments } = require("celebrate")
 const accountController = require("../controllers/account.controller")
-// const { verifyToken } = require("../utils/verifyToken")
+const { verifyToken } = require("../utils/verifyToken")
+const { upload } = require("../utils/cloudinary.js")
 const router = express.Router()
 
 router.post(
@@ -47,5 +50,18 @@ router.post(
     accountController.createNewPassword
 )
 
-router.use(errors())
+router.use(verifyToken)
+router.post(
+    "/change-password",
+    celebrate({ body: changePasswordSchema }),
+    accountController.changePassword
+)
+
+router.post(
+    "/update-profile",
+    upload.single("avatar"),
+    celebrate({ body: updateProfileSchema }),
+    accountController.updateProfile
+)
+
 module.exports = router

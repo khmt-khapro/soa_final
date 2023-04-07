@@ -9,6 +9,7 @@ const password = Joi.string()
         "string.pattern.base":
             "Minimum 8 characters, at least one letter, one number and one special character",
     })
+
 const passwordConfirm = Joi.string()
     .required()
     .min(8)
@@ -19,6 +20,20 @@ const passwordConfirm = Joi.string()
             "Minimum 8 characters, at least one letter, one number and one special character",
     })
     .error(new Error("Password confirm must equal to password"))
+
+const newPassword = password
+
+const newPasswordConfirm = Joi.string()
+    .required()
+    .min(8)
+    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+    .equal(Joi.ref("newPassword"))
+    .messages({
+        "string.pattern.base":
+            "Minimum 8 characters, at least one letter, one number and one special character",
+        "any.only": "Password confirm must equal to password",
+    })
+
 const email = Joi.string()
     .required()
     .email({
@@ -68,13 +83,18 @@ const createNewPwdSchema = Joi.object({
     passwordConfirm,
 })
 
-const updateMe = Joi.object({
+const changePasswordSchema = Joi.object({
+    currentPassword: password,
+    newPassword,
+    newPasswordConfirm,
+})
+
+const updateProfileSchema = Joi.object({
     fullname: Joi.string().allow(null, ""),
-    about: Joi.string().allow(null, ""),
-    livesIn: Joi.string().allow(null, ""),
-    workAt: Joi.string().allow(null, ""),
-    relationship: Joi.string().allow(null, ""),
-    country: Joi.string().allow(null, ""),
+    bio: Joi.string().allow(null, ""),
+    job: Joi.string().allow(null, ""),
+    address: Joi.string().allow(null, ""),
+    // some more fields
 })
 
 module.exports = {
@@ -85,4 +105,6 @@ module.exports = {
     forgotPasswordSchema,
     resetPasswordSchema,
     updatePasswordSchema,
+    changePasswordSchema,
+    updateProfileSchema,
 }

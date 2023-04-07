@@ -1,4 +1,5 @@
 const User = require("../models/user.model.js")
+const { uploadToCloudinary } = require("../utils/cloudinary.js")
 const BaseError = require("../utils/error-handling/baseError.js")
 const { genJwtToken } = require("../utils/generateToken.js")
 const { sendMessageAMQP } = require("./rabbitmq.js")
@@ -147,6 +148,7 @@ const forgotPassword = async (req, res, next) => {
     }
 }
 
+// -------------------------------- CREATE NEW PASSWORD -------------------------------
 const createNewPassword = async (req, res, next) => {
     try {
         const { password, token } = req.body
@@ -176,44 +178,63 @@ const createNewPassword = async (req, res, next) => {
     }
 }
 
-const UPDATE_PASSWORD = async (req, res, next) => {
-    const { value, error } = JoiValidate.updatePassword.validate(req.body)
-    if (error) {
-        return next(new appError(error.message, 400))
+// -------------------------------- CHANGE PASSWORD -------------------------------
+const changePassword = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const { currentPassword, newPassword } = req.body
+
+        // find user by id from auth middleware
+        const user = await User.findById(id).select("+password")
+        // check if user request current pass are correct
+        const isValidPwd = await user.verifyPassword(currentPassword, user.password)
+        if (!isValidPwd) {
+            return next(new BaseError(401, "Your current password is incorrect"))
+        }
+
+        // if true, then change the password
+        // dont use findByIdAndUpdate because methods in model not run !!!
+        user.password = newPassword
+        user.change_password_at = Date.now()
+        await user.save()
+
+        // create token and log user in
+        const accessToken = genJwtToken({ id: user.id }, "accessToken", "1h")
+        res.status(200).json({
+            status: "success",
+            message: "Change password successfully",
+            accessToken,
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
     }
-
-    const { currentPassword, password, passwordConfirm } = value
-    // find user by id from auth middleware
-    const user = await User.findById(req.user.id).select("+password")
-    // check if user request current pass are correct
-    const correctPass = await user.verifyPassword(currentPassword, user.password)
-    if (!correctPass) {
-        return next(new appError("Your current password are incorrect", 401))
-    }
-
-    // if true, then change the password
-    // dont use findByIdAndUpdate because methods in model not run !!!
-    user.password = password
-    user.passwordConfirm = passwordConfirm
-    await user.save()
-
-    // create token and log user in
-    const jwtToken = generateToken(user._id, user.isAdmin)
-    res.status(200).json({ status: "success", token: jwtToken })
 }
 
-//  const UPDATE_PROFILE = async (req, res, next) => {
-//   const { value, error } = updateProfileSchema.validate(req.body);
-//   if (error) {
-//     return next(new appError(error.message, 400));
-//   }
+// -------------------------------- UPDATE PROFILE (NOT DONE) -------------------------------
+const updateProfile = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        let imageUrl = ""
+        // if have file, then upload to cloudinary
+        if (req.file) {
+            imageUrl = await uploadToCloudinary(req.file.buffer)
+        }
 
-//   const updatedUser = await User.findByIdAndUpdate(req.user.id, value, {
-//     new: true,
-//     runValidators: true,
-//   });
-//   res.status(200).json({ status: "success", data: { user: updatedUser } });
-// };
+        // update user
+        const user = await User.findByIdAndUpdate(
+            id,
+            { ...req.body, imageUrl },
+            { new: true, runValidators: true }
+        ).select("-password -createdAt -updatedAt -__v")
+        res.status(200).json({
+            status: "success",
+            message: "Update profile successfully",
+            data: { ...user._doc, imageUrl },
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
 
 module.exports = {
     signup,
@@ -221,4 +242,6 @@ module.exports = {
     activateAccount,
     forgotPassword,
     createNewPassword,
+    changePassword,
+    updateProfile,
 }

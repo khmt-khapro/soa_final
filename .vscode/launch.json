@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Node.js app",
+            "program": "${workspaceFolder}/backend/services/account-service/index.js",
+            "runtimeExecutable": "node",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/backend/services/account-service/.env",
+        }
+    ]
+}

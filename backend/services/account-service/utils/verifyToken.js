@@ -5,7 +5,7 @@ const verifyToken = (req, res, next) => {
     const secret = process.env.ACCESS_TOKEN_SECRET
 
     if (!req.headers.authorization) {
-        next(new BaseError(401, "Invalid URL, please check again"))
+        next(new BaseError(401, "You are unauthentication"))
     }
 
     const token = req.headers.authorization.split(" ")[1]

@@ -19,5 +19,5 @@ const commentReplySchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const CommentReply = mongoose.model("CommentReplies", commentReplySchema);
+const CommentReply = mongoose.model("CommentReply", commentReplySchema);
 module.exports = CommentReply;
