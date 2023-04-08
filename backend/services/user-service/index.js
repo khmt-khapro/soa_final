@@ -29,7 +29,7 @@ mongoose
   });
 
 app.listen(PORT, () =>
-  console.log(`>>>>> Auth service is running on port ${PORT}}.`)
+  console.log(`>>>>> User service is running on port ${PORT}}.`)
 );
 
 // Catch All Unhandled Promise Rejections
