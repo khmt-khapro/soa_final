@@ -13,4 +13,14 @@ router.post(
     postController.createPost
 )
 
+router.post(
+    "/like-post", 
+    postController.likePost
+)
+
+router.post(
+    "/unlike-post", 
+    postController.unlikePost
+)
+
 module.exports = router;
