@@ -33,6 +33,27 @@ const createPost = async (req, res, next) => {
     }
 }
 
+// -----------------------LIKE POST-----------------------------------
+const likePost = async (req, res, next) => {
+    try {
+        let { id } = req.user
+        let { postID } = req.body
+        
+        await Post.findOneAndUpdate(
+            postID, 
+            { $addToSet: { likes: id } }
+        );
+
+        res.status(200).json({ 
+            status: "success", 
+            message: "Post liked",
+        })
+   
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
 module.exports = {
     createPost,
 }
