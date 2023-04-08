@@ -1,4 +1,5 @@
 const Post = require("../models/post.model")
+const Comment = require("../models/comment.model")
 const { uploadToCloudinary } = require("../utils/cloudinary.js")
 const BaseError = require("../utils/error-handling/baseError.js")
 
@@ -75,8 +76,34 @@ const unlikePost = async (req, res, next) => {
     }
 }
 
+// -----------------------COMMENT POST-----------------------------------
+const commentPost = async (req, res, next) => {
+    try {
+        let { id } = req.user
+        let { postID, content } = req.body
+        
+        // create new comment on post
+        let newComment = new Comment({
+            author: id,
+            post_id: postID,
+            content
+        })
+        
+        await newComment.save()
+
+        res.status(200).json({ 
+            status: "success", 
+            message: "Post commented", data: { newComment }
+        })
+   
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
 module.exports = {
     createPost,
     likePost,
     unlikePost,
+    commentPost,
 }

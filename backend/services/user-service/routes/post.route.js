@@ -23,4 +23,10 @@ router.post(
     postController.unlikePost
 )
 
+router.post(
+    "/comment-post", 
+    postController.commentPost
+)
+
+
 module.exports = router;
