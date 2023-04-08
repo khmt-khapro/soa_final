@@ -9,7 +9,7 @@ router.use(verifyToken);
 
 router.post(
     "/create", 
-    upload.single("avatar"), 
+    upload.single("image"), 
     postController.createPost
 )
 
