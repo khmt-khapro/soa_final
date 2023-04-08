@@ -7,7 +7,7 @@ class NotFound extends BaseError {
     isOperational = true,
     message = "Not found this resource.",
   }) {
-    super(statusCode, isOperational, message);
+    super(statusCode, message, isOperational);
   }
 }
 
