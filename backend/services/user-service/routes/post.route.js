@@ -1,32 +1,23 @@
-const express = require("express");
+const express = require("express")
 const postController = require("../controllers/post.controller")
 const { verifyToken } = require("../utils/verifyToken")
-const { upload } = require("../utils/cloudinary.js")
-const router = express.Router();
+const router = express.Router()
 
+// public api
+router.get("/top", postController.getPostsTop)
+router.get("/latest", postController.getPostsLatest)
 
-router.use(verifyToken);
+router.use(verifyToken)
+router.get("/revelant", postController.getPostsRelevant)
 
-router.post(
-    "/create", 
-    upload.single("image"), 
-    postController.createPost
-)
+router.post("/", postController.createPost)
 
-router.post(
-    "/like-post", 
-    postController.likePost
-)
+router.put("/:postID", postController.updatePostContent)
 
-router.post(
-    "/unlike-post", 
-    postController.unlikePost
-)
+router.post("/:postID/like", postController.likePost)
 
-router.post(
-    "/comment-post", 
-    postController.commentPost
-)
+router.post("/:postID/unlike", postController.unlikePost)
 
+router.post("/:postID/comments", postController.commentPost)
 
-module.exports = router;
+module.exports = router

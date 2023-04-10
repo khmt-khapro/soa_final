@@ -1,18 +1,21 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const postLikeSchema = mongoose.Schema(
-  {
-    post_id: String,
-    count: Number,
-    likes: [
-      {
-        $ref: "users",
-        $id: mongoose.Types.ObjectId,
-      },
-    ],
-  },
-  { timestamps: true }
-);
+    {
+        post_id: {
+            $ref: "posts",
+            $id: mongoose.Types.ObjectId,
+        },
+        count: Number,
+        likes: [
+            {
+                $ref: "users",
+                $id: mongoose.Types.ObjectId,
+            },
+        ],
+    },
+    { timestamps: true }
+)
 
-const PostLike = mongoose.model("PostLike", postLikeSchema);
-module.exports = PostLike;
+const PostLike = mongoose.model("PostLike", postLikeSchema)
+module.exports = PostLike
