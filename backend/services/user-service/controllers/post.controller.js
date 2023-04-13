@@ -1,9 +1,7 @@
 const Post = require("../models/post.model")
-const Comment = require("../models/comment.model")
 const User = require("../models/user.model")
-const { uploadToCloudinary } = require("../utils/cloudinary.js")
 const BaseError = require("../utils/error-handling/baseError.js")
-const PostLike = require("../models/postLike.model")
+const Tag = require("../models/tag.model")
 
 // -----------------------CREATE NEW POST-----------------------------------
 const createPost = async (req, res, next) => {
@@ -35,10 +33,15 @@ const createPost = async (req, res, next) => {
 const getPostsRelevant = async (req, res, next) => {
     try {
         const { id } = req.user
-        const { limit } = req.query
+        const { limit = 10 } = req.query
 
         // get user following tags
-        const followingTags = await User.findById(id, "following_tags")
+        let followingTags = await User.findById(id, "following_tags")
+
+        // if there no tags set some tags has many post
+        if (followingTags.length === 0) {
+            followingTags = await Tag.find().sort({ count_post: -1 }).limit(5).select("_id")
+        }
 
         const posts = await Post.find({ tags: { $in: followingTags } })
             .populate("author", "username avatar")
@@ -57,7 +60,7 @@ const getPostsRelevant = async (req, res, next) => {
 
 const getPostsLatest = async (req, res, next) => {
     try {
-        const { limit } = req.query
+        const { limit = 10 } = req.query
         const posts = await Post.find()
             .sort({ createdAt: "desc" })
             .limit(limit)
@@ -77,7 +80,7 @@ const getPostsLatest = async (req, res, next) => {
 const getPostsTop = async (req, res, next) => {
     try {
         const { limit } = req.query
-        const posts = await PostLike.find()
+        const posts = await Post.find()
             .sort({ count: -1 })
             .limit(limit)
             .populate("post_id", "author title tags time_to_read")
@@ -95,12 +98,12 @@ const getPostsTop = async (req, res, next) => {
 }
 
 // -----------------------UPDATE POST CONTENT-----------------------------------
-const updatePostContent = async (req, res, next) => {
+const updatePost = async (req, res, next) => {
     try {
         const { id } = req.user
         const { postID } = req.params
 
-        const _post = await Post.findOne(postID)
+        const _post = await Post.findById(postID).select("author")
 
         // check if user is the author of the post
         if (_post.author.toString() !== id) {
@@ -126,12 +129,17 @@ const likePost = async (req, res, next) => {
         const { postID } = req.params
 
         const post = await Post.updateOne(
-            { _id: postID },
+            { _id: postID, likes: { $ne: id } },
             {
                 $addToSet: { likes: id },
                 $inc: { like_count: 1 },
             }
         )
+        console.log("🚀 ~ file: post.controller.js:138 ~ likePost ~ post:", post)
+
+        if (post.modifiedCount === 0) {
+            return next(new BaseError(400, "Fail to like post, unkown error"))
+        }
 
         res.status(200).json({
             status: "success",
@@ -149,12 +157,16 @@ const unlikePost = async (req, res, next) => {
         const { postID } = req.params
 
         const post = await Post.updateOne(
-            { _id: postID },
+            { _id: postID, likes: { $in: [id] } },
             {
                 $pull: { likes: id },
                 $inc: { like_count: -1 },
             }
         )
+
+        if (post.modifiedCount === 0) {
+            return next(new BaseError(400, "Fail to unlike post, unkown error"))
+        }
 
         res.status(200).json({
             status: "success",
@@ -165,38 +177,11 @@ const unlikePost = async (req, res, next) => {
     }
 }
 
-// -----------------------COMMENT POST-----------------------------------
-const commentPost = async (req, res, next) => {
-    try {
-        const { id } = req.user
-        const { postID } = req.params
-        const { content } = req.body
-
-        // create new comment on post
-        const newComment = new Comment({
-            author: id,
-            post_id: postID,
-            content,
-        })
-
-        await newComment.save()
-
-        res.status(200).json({
-            status: "success",
-            message: "Post commented",
-            data: { newComment },
-        })
-    } catch (error) {
-        next(new BaseError(500, error.message))
-    }
-}
-
 module.exports = {
     createPost,
-    updatePostContent,
+    updatePost,
     likePost,
     unlikePost,
-    commentPost,
     getPostsRelevant,
     getPostsLatest,
     getPostsTop,

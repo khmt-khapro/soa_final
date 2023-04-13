@@ -3,10 +3,10 @@ const nodemailer = require("nodemailer")
 const { OAuth2Client } = require("google-auth-library")
 
 const GOOGLE_MAILER_CLIENT_ID =
-  "927373112092-7r01uot5la1hep0h8t4kq055dqtskn17.apps.googleusercontent.com"
-const GOOGLE_MAILER_CLIENT_SECRET = "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"
+  "927373112092-ae5lrjj30rjrrvprukcf3pvps1kmcn6u.apps.googleusercontent.com"
+const GOOGLE_MAILER_CLIENT_SECRET = "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"
 const GOOGLE_MAILER_REFRESH_TOKEN =
-  "1//04FyOouX4ZQ4wCgYIARAAGAQSNwF-L9Ir8ubAGz3M6msoIZ8E2hlRhsjxeO2aW_Ib25HN8_IPVYFB63QFUozXLzTOFhwnlH_AZ7I"
+  "1//04BRefY1SqyPfCgYIARAAGAQSNwF-L9IrsQ58bopt4vRTiv0_xeLd3eMcR6rGM2oRCAFBWqLAAzoL8o38VmbxD7Z0VDLJgbcRFGg"
 const ADMIN_EMAIL_ADDRESS = "khavmb123@gmail.com"
 
 const getTransporter = async () => {
@@ -26,7 +26,10 @@ const getTransporter = async () => {
       if (err) {
         reject()
       }
-      console.log(token)
+      console.log(
+        "🚀 ~ file: mailer.js:30 ~ myOAuth2Client.getAccessToken ~ token:",
+        token
+      )
       resolve(token)
     })
   })
@@ -53,6 +56,7 @@ const send_mail = async (mailOptions) => {
     return new Promise((resolve, reject) => {
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
+          console.log("🚀 ~ file: mailer.js:56 ~ error:", error)
           resolve(false)
         } else {
           resolve(true)

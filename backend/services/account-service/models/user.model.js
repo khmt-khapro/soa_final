@@ -41,7 +41,12 @@ const userSchema = mongoose.Schema(
             enum: ["pending", "activated", "disabled"],
             default: "pending",
         },
-        following_tags: [],
+        following_tags: [
+            {
+                ref: "tags",
+                type: mongoose.Types.ObjectId,
+            },
+        ],
     },
     { timestamps: true }
 )
