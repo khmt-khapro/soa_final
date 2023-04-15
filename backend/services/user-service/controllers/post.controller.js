@@ -2,6 +2,15 @@ const Post = require("../models/post.model")
 const User = require("../models/user.model")
 const BaseError = require("../utils/error-handling/baseError.js")
 const Tag = require("../models/tag.model")
+const {
+    startOfWeekUtc,
+    endOfWeekUtc,
+    startOfMonthUtc,
+    endOfMonthUtc,
+    startOfYearUtc,
+    endOfYearUtc,
+} = require("../utils/moment")
+const { sendMessageAMQP } = require("./rabbitmq")
 
 // -----------------------CREATE NEW POST-----------------------------------
 const createPost = async (req, res, next) => {
@@ -31,6 +40,7 @@ const createPost = async (req, res, next) => {
 
 // -----------------------GET POSTS-----------------------------------
 const getPostsRelevant = async (req, res, next) => {
+    // maybe then change to get user following post
     try {
         const { id } = req.user
         const { limit = 10 } = req.query
@@ -77,10 +87,17 @@ const getPostsLatest = async (req, res, next) => {
     }
 }
 
+// filter by week, month, year
 const getPostsTop = async (req, res, next) => {
     try {
-        const { limit } = req.query
-        const posts = await Post.find()
+        const { limit, filter } = req.query
+        const queryObj = {
+            week: { createdAt: { $gte: startOfWeekUtc, $lte: endOfWeekUtc } },
+            month: { createdAt: { $gte: startOfMonthUtc, $lte: endOfMonthUtc } },
+            year: { createdAt: { $gte: startOfYearUtc, $lte: endOfYearUtc } },
+        }
+
+        const posts = await Post.find(queryObj[filter])
             .sort({ count: -1 })
             .limit(limit)
             .populate("post_id", "author title tags time_to_read")
@@ -97,7 +114,7 @@ const getPostsTop = async (req, res, next) => {
     }
 }
 
-// -----------------------UPDATE POST CONTENT-----------------------------------
+// ----------------------- UPDATE POST (CONTENT/TITLE) -----------------------------------
 const updatePost = async (req, res, next) => {
     try {
         const { id } = req.user
@@ -122,6 +139,29 @@ const updatePost = async (req, res, next) => {
     }
 }
 
+// ----------------------- DELETE A POST-----------------------------------
+const deletePost = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const { postID } = req.params
+
+        // check if user is author, then allow delete
+        const post = await Post.findOne({ _id: postID })
+        if (post.author.toString() !== id) {
+            return next(new BaseError(401, "Unauthorized"))
+        }
+
+        await Post.findByIdAndDelete(postID)
+
+        res.status(200).json({
+            status: "success",
+            message: "Delete post successfully",
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
 // -----------------------LIKE POST-----------------------------------
 const likePost = async (req, res, next) => {
     try {
@@ -135,7 +175,6 @@ const likePost = async (req, res, next) => {
                 $inc: { like_count: 1 },
             }
         )
-        console.log("🚀 ~ file: post.controller.js:138 ~ likePost ~ post:", post)
 
         if (post.modifiedCount === 0) {
             return next(new BaseError(400, "Fail to like post, unkown error"))
@@ -145,6 +184,19 @@ const likePost = async (req, res, next) => {
             status: "success",
             message: "Post liked",
         })
+
+        const sender = await User.findById(id, "username")
+        const { author } = await Post.findById(postID, "author").populate("author", "_id")
+        // send notification to author
+        const message = {
+            type: "like",
+            recipient: author._id,
+            sender: id,
+            post: postID,
+            message: `${sender.username} like your post`,
+        }
+
+        sendMessageAMQP({ queueName: "notification", message })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -172,6 +224,8 @@ const unlikePost = async (req, res, next) => {
             status: "success",
             message: "Post unliked",
         })
+
+        // remove notification in database
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -180,6 +234,7 @@ const unlikePost = async (req, res, next) => {
 module.exports = {
     createPost,
     updatePost,
+    deletePost,
     likePost,
     unlikePost,
     getPostsRelevant,

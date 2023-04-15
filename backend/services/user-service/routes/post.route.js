@@ -15,6 +15,8 @@ router.post("/", postController.createPost)
 
 router.patch("/:postID", postController.updatePost)
 
+router.delete("/:postID", postController.deletePost)
+
 router.post("/:postID/like", postController.likePost)
 
 router.post("/:postID/unlike", postController.unlikePost)

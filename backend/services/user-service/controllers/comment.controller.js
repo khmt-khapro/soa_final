@@ -1,6 +1,8 @@
 const Comment = require("../models/comment.model")
 const Post = require("../models/post.model")
+const User = require("../models/user.model")
 const BaseError = require("../utils/error-handling/baseError")
+const { sendMessageAMQP } = require("./rabbitmq")
 
 // -----------------------COMMENT IN  A POST-----------------------------------
 const createComment = async (req, res, next) => {
@@ -10,7 +12,9 @@ const createComment = async (req, res, next) => {
         const { content, parent } = req.body
 
         // check if post exists
-        const isExistPost = await Post.findById(postID).select("_id")
+        const isExistPost = await Post.findById(postID)
+            .select("_id author")
+            .populate("author", "username")
         if (!isExistPost) {
             return next(new BaseError(404, "Post not found"))
         }
@@ -24,7 +28,6 @@ const createComment = async (req, res, next) => {
 
         // create new comment on post
         const newComment = new Comment(query)
-
         await newComment.save()
 
         res.status(200).json({
@@ -32,6 +35,20 @@ const createComment = async (req, res, next) => {
             message: "Post commented",
             data: { newComment },
         })
+
+        const sender = await User.findById(id).select("username")
+        console.log("🚀 ~ file: comment.controller.js:39 ~ createComment ~ sender:", sender)
+        // send notification to queue
+        const message = {
+            type: "comment",
+            recipient: isExistPost.author,
+            sender: id,
+            post: postID,
+            comment: newComment._id,
+            message: `${sender.username} commented on your post`,
+        }
+
+        sendMessageAMQP({ queueName: "notification", message })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -68,17 +85,31 @@ const deleteComment = async (req, res, next) => {
         const { commentID } = req.params
 
         // check if user is author, then allow delete
-        const _comment = await Comment.findOne({ _id: commentID })
-        if (_comment.author.toString() !== id) {
-            return next(new BaseError(401, "Unauthorized"))
-        }
+        // const _comment = await Comment.findOne({ _id: commentID })
+        // if (_comment.author.toString() !== id) {
+        //     return next(new BaseError(401, "Unauthorized"))
+        // }
 
-        await Comment.findByIdAndDelete(commentID)
+        // await Comment.findByIdAndDelete(commentID)
+
+        const deletedComment = await Comment.findOneAndDelete({
+            _id: commentID,
+            author: { $eq: id },
+        })
+
+        if (!deletedComment) {
+            return next(new BaseError(400, "Invalid comment id or can not delete comment"))
+        }
 
         res.status(200).json({
             status: "success",
             message: "Delete comment successfully",
         })
+
+        // delete all reply comments
+        // await Comment.deleteMany({ parent: commentID })
+
+        // send message to queue to delete all reply comments
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -95,7 +126,6 @@ const getComments = async (req, res, next) => {
             .sort({ createdAt: "desc" })
             .limit(limit)
             .populate("author", "username avatar")
-        console.log("🚀 ~ file: comment.controller.js:98 ~ getComments ~ comments:", comments)
 
         res.status(200).json({
             status: "success",
@@ -121,7 +151,7 @@ const getCommentsReply = async (req, res, next) => {
         res.status(200).json({
             status: "success",
             message: "Get comments reply successfully",
-            data: { comments },
+            data: { comments, comment_count: comments.length },
         })
     } catch (error) {
         next(new BaseError(500, error.message))
@@ -151,6 +181,15 @@ const unlikeComment = async (req, res, next) => {
             status: "success",
             message: "Comment unliked",
         })
+
+        // send message to queue to remove notification
+        const message = {
+            type: "comment",
+            sender: id,
+            comment: commentID,
+        }
+
+        sendMessageAMQP({ queueName: "unlike", message })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -179,6 +218,22 @@ const likeComment = async (req, res, next) => {
             status: "success",
             message: "Comment liked",
         })
+
+        const { post_id, author } = await Comment.findById(commentID)
+            .select("author post_id")
+            .populate("author", "username")
+
+        // send notification to queue
+        const message = {
+            type: "like",
+            recipient: author._id,
+            sender: id,
+            post: post_id,
+            comment: commentID,
+            message: `${author.username} like your comment`,
+        }
+
+        sendMessageAMQP({ queueName: "notification", message })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
