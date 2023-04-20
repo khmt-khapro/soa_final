@@ -16,14 +16,13 @@ const CommentSlice = createSlice({
       state.comment = [...state.comment, action.payload];
     },
     editComment: (state, action) => {
-      const item = state.comment.filter((item) => item.id === id);
-      // const otherItems = comment.filter(item => item.id !== id)
-
-      //   const newComment = [...item]
-      item.content = content;
-      console.log(state.comment);
-      console.log("edit:", item.content);
-    //   state.comment = [...state.comment];
+      //   const item = state.comment.filter((item) => item.id === id);
+      //   // const otherItems = comment.filter(item => item.id !== id)
+      //   //   const newComment = [...item]
+      //   item.content = content;
+      //   console.log(state.comment);
+      //   console.log("edit:", item.content);
+      //   state.comment = [...state.comment];
     },
     getAllComments: (state, action) => {
       state.post = action.payload;
@@ -50,5 +49,6 @@ const CommentSlice = createSlice({
   },
 });
 
-export const { createComment, editComment, getAllComments } = CommentSlice.actions;
+export const { createComment, editComment, getAllComments } =
+  CommentSlice.actions;
 export default CommentSlice.reducer;
