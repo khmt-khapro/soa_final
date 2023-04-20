@@ -4,7 +4,7 @@ const createError = require("../utils/error-handling/createError")
 const errorMiddleware = require("../middlewares/error.middleware")
 
 const initRoute = (app) => {
-    app.use("/api/user", userRoute)
+    app.use("/api/users", userRoute)
     app.use("/api/posts", postRoute)
     // app.use("/api/upload", uploadRoute);
 

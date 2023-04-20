@@ -11,6 +11,7 @@ const {
     endOfYearUtc,
 } = require("../utils/moment")
 const { sendMessageAMQP } = require("./rabbitmq")
+const Bookmark = require("../models/bookmark.model")
 
 // -----------------------CREATE NEW POST-----------------------------------
 const createPost = async (req, res, next) => {
@@ -189,7 +190,7 @@ const likePost = async (req, res, next) => {
         const { author } = await Post.findById(postID, "author").populate("author", "_id")
         // send notification to author
         const message = {
-            type: "like",
+            type: "like_post",
             recipient: author._id,
             sender: id,
             post: postID,
@@ -225,11 +226,129 @@ const unlikePost = async (req, res, next) => {
             message: "Post unliked",
         })
 
-        // remove notification in database
+        // send message to queue to remove notification
+        const message = {
+            type: "post",
+            sender: id,
+            post: postID,
+        }
+
+        sendMessageAMQP({ queueName: "unlike", message })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
 }
+
+// ----------------------- CHANGE POST PRIVACY -----------------------------------
+const changePostPrivacy = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const { postID } = req.params
+        const { privacy } = req.body
+
+        const post = await Post.findOne({ _id: postID, author: id })
+        if (!post) {
+            return next(new BaseError(400, "Post not found"))
+        }
+
+        post.privacy = privacy
+        await post.save()
+
+        res.status(200).json({
+            status: "success",
+            message: "Post privacy changed",
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
+// ----------------------- BOOKMARK POST -----------------------------------
+const bookmarkPost = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const { postID } = req.params
+
+        // check if post already bookmarked
+        const post = await Bookmark.findById(postID)
+        if (post) {
+            return next(new BaseError(400, "Post already bookmarked"))
+        }
+
+        // check post privacy
+        const _post = await Post.findById(postID, "privacy")
+        if (_post.privacy === "private") {
+            return next(new BaseError(400, "Cannot bookmark this post"))
+        }
+
+        const bookmark = await Bookmark.create({ user: id, post: postID })
+
+        res.status(200).json({
+            status: "success",
+            message: "Post bookmarked",
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
+// ----------------------- UNBOOKMARK POST -----------------------------------
+const unbookmarkPost = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const { postID } = req.params
+
+        // check if post not bookmarked
+        const post = await Bookmark.findById(postID)
+        if (!post) {
+            return next(new BaseError(400, "Bad request"))
+        }
+
+        await Bookmark.findOneAndDelete({ post: postID })
+
+        res.status(200).json({
+            status: "success",
+            message: "Post unbookmarked",
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
+// ----------------------- GET BOOKMARK POSTS -----------------------------------
+const getBookmarks = async (req, res, next) => {
+    try {
+        const { id } = req.user
+
+        const bookmarks = await Bookmark.find({ user: id }).populate(
+            "post",
+            "title author time_to_read tags"
+        )
+
+        if (!bookmarks) {
+            return next(new BaseError(400, "No bookmarks founded"))
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Get bookmarks successfully",
+            data: bookmarks,
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
+// ----------------------- GET USERS WHO LIKE A POST-----------------------------------
+// const getPostLikes = async (req, res, next) => {
+//     try {
+//         const { postID } = req.params
+
+//         const
+//     } catch (error) {
+//         next(new BaseError(500, error.message))
+//     }
+// }
 
 module.exports = {
     createPost,
@@ -240,4 +359,8 @@ module.exports = {
     getPostsRelevant,
     getPostsLatest,
     getPostsTop,
+    changePostPrivacy,
+    unbookmarkPost,
+    bookmarkPost,
+    getBookmarks,
 }

@@ -26,12 +26,12 @@ class NotificationService {
             const { type, sender, comment, post } = JSON.parse(message)
             const queryObj = {
                 comment: {
-                    type: "like",
+                    type: "like_comment",
                     sender,
                     comment,
                 },
                 post: {
-                    type: "like",
+                    type: "like_post",
                     sender,
                     post,
                 },
@@ -39,6 +39,25 @@ class NotificationService {
 
             // delete notification
             await Notification.findOneAndDelete(queryObj[type])
+        })
+
+        // delete action
+        consumeMessageAMQP({ queueName: "delete" }, async (message) => {
+            const { type, sender, comment, post } = JSON.parse(message)
+            const queryObj = {
+                comment: {
+                    type: "comment",
+                    sender,
+                    comment,
+                },
+                post: {
+                    post,
+                },
+            }
+
+            // delete notification
+            if (type === "comment") await Notification.findOneAndDelete(queryObj[type])
+            if (type === "post") await Notification.deleteMany(queryObj[type])
         })
     }
 }

@@ -9,11 +9,19 @@ router.get("/top", postController.getPostsTop)
 router.get("/latest", postController.getPostsLatest)
 
 router.use(verifyToken)
-router.get("/revelant", postController.getPostsRelevant)
-
 router.post("/", postController.createPost)
 
+router.get("/revelant", postController.getPostsRelevant)
+
+router.get("/bookmarks", postController.getBookmarks)
+
 router.patch("/:postID", postController.updatePost)
+
+router.patch("/:postID/privacy", postController.changePostPrivacy)
+
+router.patch("/:postID/bookmark", postController.bookmarkPost)
+
+router.patch("/:postID/unbookmark", postController.unbookmarkPost)
 
 router.delete("/:postID", postController.deletePost)
 

@@ -84,14 +84,6 @@ const deleteComment = async (req, res, next) => {
         const { id } = req.user
         const { commentID } = req.params
 
-        // check if user is author, then allow delete
-        // const _comment = await Comment.findOne({ _id: commentID })
-        // if (_comment.author.toString() !== id) {
-        //     return next(new BaseError(401, "Unauthorized"))
-        // }
-
-        // await Comment.findByIdAndDelete(commentID)
-
         const deletedComment = await Comment.findOneAndDelete({
             _id: commentID,
             author: { $eq: id },
@@ -107,9 +99,16 @@ const deleteComment = async (req, res, next) => {
         })
 
         // delete all reply comments
-        // await Comment.deleteMany({ parent: commentID })
+        await Comment.deleteMany({ parent: commentID })
 
-        // send message to queue to delete all reply comments
+        // send message to queue to delete notification
+        const message = {
+            type: "comment",
+            comment: commentID,
+            sender: id,
+        }
+
+        sendMessageAMQP({ queueName: "delete", message })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -225,7 +224,7 @@ const likeComment = async (req, res, next) => {
 
         // send notification to queue
         const message = {
-            type: "like",
+            type: "like_comment",
             recipient: author._id,
             sender: id,
             post: post_id,
