@@ -1,0 +1,5 @@
+export {default as ViewProfile} from "./ViewProfile"
+export {default as EditProfile} from "./EditProfile"
+export {default as Setting} from "./Setting"
+export {default as Dashboard} from "./Dashboard"
+export {default as Custom} from "./Custom"

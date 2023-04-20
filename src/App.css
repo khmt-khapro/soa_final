@@ -1,38 +1,101 @@
-.App {
+/* HEADING */
+/* h1 {
+  font-size: 26px;
+}
+
+h2, .ql-size-large {
+  font-size: 19.5px;
+}
+
+h3 {
+  font-size: 15.21px;
+}
+
+h4, p {
+  font-size: 13px;
+}
+
+h5 {
+  font-size: 10.79px;
+}
+h6 {
+  font-size: 8.71px;
+} */
+
+/* SIZE */
+/* .ql-size-small {
+  font-size: 9.75px;
+}
+
+.ql-size-huge {
+  font-size: 32.5px;
+} */
+
+/* FONT */
+/* .ql-font-serif {
+  font-family: Georgia, Times New Roman, serif;
+}
+
+.ql-font-monospace {
+  font-family: Monaco, Courier New, monospace;
+}
+
+.ql-align-justify {
+  text-align: justify;
+} */
+
+/* ALIGN */
+/* .ql-align-center {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.ql-align-right {
+  text-align: right;
+} */
+
+/* LIST */
+
+/* ol {
+  list-style: decimal;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+ul {
+  list-style: inside;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.ql-indent-1:not(.ql-direction-rtl) {
+  padding-left: 3em;
 }
 
-.App-link {
-  color: #61dafb;
+.ql-indent-2:not(.ql-direction-rtl) {
+  padding-left: 6em;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.ql-indent-3:not(.ql-direction-rtl) {
+  padding-left: 9em;
 }
+
+.ql-indent-4:not(.ql-direction-rtl) {
+  padding-left: 12em;
+}
+
+.ql-indent-5:not(.ql-direction-rtl) {
+  padding-left: 15em;
+}
+
+.ql-indent-6:not(.ql-direction-rtl) {
+  padding-left: 18em;
+}
+
+.ql-indent-7:not(.ql-direction-rtl) {
+  padding-left: 21em;
+}
+
+.ql-indent-8:not(.ql-direction-rtl) {
+  padding-left: 24em;
+}
+
+.ql-direction-rtl {
+  direction: rtl;
+} */
+

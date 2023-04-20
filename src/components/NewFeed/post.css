@@ -1,0 +1,115 @@
+/* HEADING */
+.post h1 {
+    font-size: 26px;
+}
+
+.post h2,
+.ql-size-large {
+    font-size: 19.5px;
+}
+
+.post h3 {
+    font-size: 15.21px;
+}
+
+.post h4,
+.post p {
+    font-size: 13px;
+}
+
+.post h5 {
+    font-size: 10.79px;
+}
+
+h6 {
+    font-size: 8.71px;
+}
+
+/* SIZE */
+.post .ql-size-small {
+    font-size: 9.75px;
+}
+
+.post .ql-size-huge {
+    font-size: 32.5px;
+}
+
+/* FONT */
+.ql-font-serif {
+    font-family: Georgia, Times New Roman, serif;
+}
+
+.post .ql-font-monospace {
+    font-family: Monaco, Courier New, monospace;
+}
+
+.post .ql-align-justify {
+    text-align: justify;
+}
+
+/* ALIGN */
+.post .ql-align-center {
+    text-align: center;
+}
+
+.post .ql-align-right {
+    text-align: right;
+}
+
+/* LIST */
+.post ol {
+    list-style: decimal;
+}
+
+.post ul {
+    list-style: inside;
+}
+
+.post .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+}
+
+.post .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+}
+
+.post .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+}
+
+.post .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+}
+
+.post .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+}
+
+.post .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+}
+
+.post .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+}
+
+.post .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+}
+
+.post .ql-direction-rtl {
+    direction: rtl;
+}
+
+/* .post ,
+.post p{
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+} */
+.post img {
+
+  width: 100%;
+  height: auto;
+  margin: 10px auto 0px;
+}
