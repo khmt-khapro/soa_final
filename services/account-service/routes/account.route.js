@@ -23,7 +23,7 @@ router.post(
 )
 
 router.post(
-    "/login",
+    "/signin",
     celebrate({
         body: signinSchema,
     }),

@@ -2,11 +2,13 @@ const amqp = require("amqplib")
 const { handleSendMail } = require("./mailer")
 
 const amqp_docker_url = "amqp://localhost"
+const amqp_cloud_url =
+  "amqps://gntkvuew:WvwnFyjIQwnuKK1z5SY-QvH0vFn1iGYb@armadillo.rmq.cloudamqp.com/gntkvuew"
 
 const sendMessageAMQP = async ({ message, queueName }) => {
   try {
     // create connection
-    const connection = await amqp.connect(amqp_docker_url)
+    const connection = await amqp.connect(amqp_cloud_url)
     // create chanel
     const chanel = await connection.createChannel()
     // create queue
@@ -24,7 +26,7 @@ const sendMessageAMQP = async ({ message, queueName }) => {
 const receiveMessageAMQP = async (queueName) => {
   try {
     // create connection
-    const connection = await amqp.connect(amqp_docker_url)
+    const connection = await amqp.connect(amqp_cloud_url)
     // create chanel
     const chanel = await connection.createChannel()
     // create queue
