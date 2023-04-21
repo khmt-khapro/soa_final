@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 // import "./App.css";
 import Layout from "./components/Layout";
 import Signin from "./pages/Signin";
@@ -18,7 +24,7 @@ import {
 } from "./components/Profile";
 import CreatePost from "./components/CreatePost";
 import Toast from "./components/Toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +32,20 @@ import ActivateAccount from "./pages/ActivateAccount";
 
 function App() {
   const message = useSelector((state) => state.messageStore?.message);
+  const accessToken = useSelector((state) => state.auth?.accessToken);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const publicRoutes = ["/", "/tag"];
+
+  useEffect(() => {
+    console.log(pathname);
+    console.log("accessToken: ", accessToken);
+    if (!publicRoutes.includes(pathname) && !accessToken) {
+      navigate("/signin");
+    }
+
+  }, [pathname]);
 
   return (
     <div className="App">
@@ -37,27 +57,27 @@ function App() {
         {message && <Toast type={message?.type} message={message?.message} />}
       </div>
       {/* <button className="mt-[500px]" onClick={() => setShowMessage({isDone: !showMessage.isDone || false})}>showMessage</button> */}
-      <BrowserRouter>
-        <Routes>
-          {/* <Route path="/" element={<Layout />} /> */}
-          <Route path="/" element={<Home />}>
-            <Route index element={<NewFeed />} />
-            <Route path="/reading-list" element={<ReadingList />} />
-            <Route path="/tag" element={<Tag />} />
-            <Route path="/create-post" element={<CreatePost />} />
-            <Route path="/profile/view" element={<ViewProfile />} />
-            <Route path="/profile/setting" element={<Setting />}>
-              <Route path="edit-profile" element={<EditProfile />} />
-              <Route path="custom" element={<Custom />} />
-            </Route>
+      {/* <BrowserRouter> */}
+      <Routes>
+        {/* <Route path="/" element={<Layout />} /> */}
+        <Route path="/" element={<Home />}>
+          <Route index element={<NewFeed />} />
+          <Route path="/reading-list" element={<ReadingList />} />
+          <Route path="/tag" element={<Tag />} />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/profile/view" element={<ViewProfile />} />
+          <Route path="/profile/setting" element={<Setting />}>
+            <Route path="edit-profile" element={<EditProfile />} />
+            <Route path="custom" element={<Custom />} />
           </Route>
-          <Route path="activate" element={<ActivateAccount />} />
-          <Route path="signin" element={<Signin />} />
-          <Route path="signup" element={<Signup />} />
-          <Route path="forgot-password" element={<ForgetPassword />} />
-          <Route path="*" element={<NoPage />} />
-        </Routes>
-      </BrowserRouter>
+        </Route>
+        <Route path="activate" element={<ActivateAccount />} />
+        <Route path="signin" element={<Signin />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="forgot-password" element={<ForgetPassword />} />
+        <Route path="*" element={<NoPage />} />
+      </Routes>
+      {/* </BrowserRouter> */}
       <ToastContainer />
     </div>
   );

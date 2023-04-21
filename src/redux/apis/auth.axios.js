@@ -12,6 +12,7 @@ export const signupRequest = async (data) => {
 
   return response.data.message;
 };
+
 export const signinRequest = async (data) => {
   const response = await baseRequest.post("/account/signin", data);
   console.log(
