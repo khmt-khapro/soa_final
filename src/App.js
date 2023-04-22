@@ -32,19 +32,15 @@ import ActivateAccount from "./pages/ActivateAccount";
 
 function App() {
   const message = useSelector((state) => state.messageStore?.message);
-  const accessToken = useSelector((state) => state.auth?.accessToken);
+  const { user } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const publicRoutes = ["/", "/tag"];
+  const publicRoutes = ["/", "/tag", "/signin", "/signup"];
 
   useEffect(() => {
-    console.log(pathname);
-    console.log("accessToken: ", accessToken);
-    if (!publicRoutes.includes(pathname) && !accessToken) {
+    if (!publicRoutes.includes(pathname) && !user?.accessToken)
       navigate("/signin");
-    }
-
   }, [pathname]);
 
   return (
@@ -56,10 +52,8 @@ function App() {
       >
         {message && <Toast type={message?.type} message={message?.message} />}
       </div>
-      {/* <button className="mt-[500px]" onClick={() => setShowMessage({isDone: !showMessage.isDone || false})}>showMessage</button> */}
-      {/* <BrowserRouter> */}
+
       <Routes>
-        {/* <Route path="/" element={<Layout />} /> */}
         <Route path="/" element={<Home />}>
           <Route index element={<NewFeed />} />
           <Route path="/reading-list" element={<ReadingList />} />
@@ -77,7 +71,6 @@ function App() {
         <Route path="forgot-password" element={<ForgetPassword />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
-      {/* </BrowserRouter> */}
       <ToastContainer />
     </div>
   );

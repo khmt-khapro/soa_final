@@ -33,7 +33,7 @@ const ActivateAccount = () => {
     if (success) {
       toast.info(message);
       dispatch(reset());
-      navigate("/login");
+      navigate("/signin");
     }
   }, [success, error, message, navigate, dispatch]);
 

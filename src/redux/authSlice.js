@@ -6,14 +6,15 @@ import {
 } from "./apis/auth.axios";
 
 // get user from local storage
-const accessToken = JSON.parse(localStorage.getItem("accessToken"));
+// const accessToken = JSON.parse(localStorage.getItem("accessToken"));
 const initialState = {
-  accessToken: accessToken ? accessToken : null,
+  // accessToken: accessToken ? accessToken : null,
   error: false,
   success: false,
   loading: false,
   modified: false,
   message: "",
+  user: JSON.parse(localStorage.getItem("user")) || null,
 };
 
 // signup action creator
@@ -59,7 +60,7 @@ export const signin = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk("auth/logout", async () => {
-  await signupRequest.logout();
+  
 });
 
 export const updateInfo = createAsyncThunk(
@@ -110,13 +111,16 @@ const authSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = action.payload.message;
-        state.accessToken = action.payload.data.accessToken;
+        // state.accessToken = action.payload.data.accessToken;
+        state.user = action.payload.data;
 
         // set accessToken to local storage
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(action.payload.data.accessToken)
-        );
+        // localStorage.setItem(
+        //   "accessToken",
+        //   JSON.stringify(action.payload.data.accessToken)
+        // );
+        // set user data to local storage
+        localStorage.setItem("user", JSON.stringify(action.payload.data));
       })
       .addCase(signin.rejected, (state, action) => {
         state.loading = false;
@@ -137,7 +141,11 @@ const authSlice = createSlice({
         state.error = true;
         state.message = action.payload;
       })
+      
+      // logout
       .addCase(logout.fulfilled, (state) => {
+        console.log("store logout update")
+        localStorage.removeItem('user')
         state.user = null;
       })
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { reset, signup } from "../../redux/authSlice";
 
 function SignupPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { loading, error, success, message } = useSelector(
     (state) => state.auth
@@ -22,6 +23,7 @@ function SignupPage() {
     if (success) {
       toast.success(message);
       dispatch(reset());
+      navigate("/signin");
     }
   }, [success, error]);
 
@@ -72,7 +74,7 @@ function SignupPage() {
                 Đăng ký
               </h2>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
-                Bạn đã có tài khoản?
+                Bạn đã có tài khoản?{" "}
                 <Link
                   to={"/signin"}
                   href=""

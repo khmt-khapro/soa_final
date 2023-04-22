@@ -19,7 +19,7 @@ export const signinRequest = async (data) => {
     "🚀 ~ file: auth.axios.js:5 ~ signupRequest ~ response:",
     response
   );
-
+  
   return response.data;
 };
 

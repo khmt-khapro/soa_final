@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { reset, signin } from "../../redux/authSlice";
 
 function SigninPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const { loading, error, success, message } = useSelector(
     (state) => state.auth
@@ -22,6 +23,7 @@ function SigninPage() {
     if (success) {
       toast.success(message);
       dispatch(reset());
+      navigate('/')
     }
   }, [success, error]);
 
@@ -57,19 +59,19 @@ function SigninPage() {
       <section>
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="flex items-center justify-center px-4 py-8 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-            <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
+            <div className="w-[75%] md:w-[50%] lg:w-[75%]">
               <h2 className="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl">
                 Đăng ký
               </h2>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
-                Bạn đã có tài khoản?
+                Bạn chưa có tài khoản? {" "}
                 <Link
-                  to={"/signin"}
+                  to={"/signup"}
                   href=""
                   title=""
                   className="font-medium text-indigo-600 transition-all duration-200 hover:text-indigo-700 hover:underline focus:text-indigo-700"
                 >
-                  Đăng nhập
+                  Đăng ký
                 </Link>
               </p>
               <form
@@ -88,7 +90,7 @@ function SigninPage() {
                     </label>
                     <div className="mt-2.5">
                       <input
-                        className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
+                        className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-700 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
                         type="email"
                         placeholder="Nhập email của bạn"
                         id="email"
@@ -115,7 +117,7 @@ function SigninPage() {
                     </label>
                     <div className="mt-2.5">
                       <input
-                        className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
+                        className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-700 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
                         type="password"
                         placeholder="Nhập mật khẩu của bạn"
                         id="password"

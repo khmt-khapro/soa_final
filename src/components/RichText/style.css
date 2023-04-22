@@ -12,3 +12,12 @@
 .ql-container {
     height: auto;
 }
+
+.ql-container.ql-snow {
+    border: 0;
+}
+
+.ql-toolbar.ql-snow {
+    border: 0;
+    border-top: 0.5px solid rgb(220, 214, 214);
+} 
