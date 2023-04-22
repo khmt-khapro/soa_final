@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   activateAccountRequest,
+  createNewPasswordRequest,
+  forgotPasswordRequest,
   signinRequest,
   signupRequest,
 } from "./apis/auth.axios";
@@ -50,6 +52,32 @@ export const signin = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       return await signinRequest(data);
+    } catch (error) {
+      const message = error.response.data.message;
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email, thunkAPI) => {
+    try {
+      return await forgotPasswordRequest(email);
+    } catch (error) {
+      const message = error.response.data.message;
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const createNewPassword = createAsyncThunk(
+  "auth/createNewPassword",
+  async (data, thunkAPI) => {
+    try {
+      return await createNewPasswordRequest(data);
     } catch (error) {
       const message = error.response.data.message;
 
@@ -133,6 +161,34 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(activateAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.message = action.payload;
+      })
+      // forgot password
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.message = action.payload;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.message = action.payload;
+      })
+      // create new password
+      .addCase(createNewPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createNewPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.message = action.payload;
+      })
+      .addCase(createNewPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
         state.message = action.payload;

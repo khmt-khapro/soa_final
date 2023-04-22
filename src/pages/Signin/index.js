@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { reset, signin } from "../../redux/authSlice";
 
 function SigninPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { loading, error, success, message } = useSelector(
     (state) => state.auth
@@ -22,6 +23,7 @@ function SigninPage() {
     if (success) {
       toast.success(message);
       dispatch(reset());
+      navigate("/");
     }
   }, [success, error]);
 
@@ -59,18 +61,14 @@ function SigninPage() {
           <div className="flex items-center justify-center px-4 py-8 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
             <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
               <h2 className="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl">
-                Đăng ký
+                Đăng nhập
               </h2>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
-                Bạn đã có tài khoản?
+                Bạn chưa có tài khoản?
                 <Link
-                  to={"/signin"}
-                  href=""
-                  title=""
+                  to={"/signup"}
                   className="font-medium text-indigo-600 transition-all duration-200 hover:text-indigo-700 hover:underline focus:text-indigo-700"
-                >
-                  Đăng nhập
-                </Link>
+                ></Link>
               </p>
               <form
                 action=""
@@ -157,6 +155,15 @@ function SigninPage() {
                   </div>
                 </div>
               </form>
+
+              <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
+                <Link
+                  to={"/forgot-password"}
+                  className="font-medium text-indigo-600 transition-all duration-200 hover:text-indigo-700 hover:underline focus:text-indigo-700"
+                >
+                  Quên mật khẩu?
+                </Link>
+              </p>
             </div>
           </div>
 
