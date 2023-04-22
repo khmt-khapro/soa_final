@@ -143,9 +143,7 @@ function RichText({ customClass, path = "", modules, handleFunction }) {
             type="text"
             id="tags"
             name="tags"
-            value=""
-            // value={formik.values.tags}
-            // onChange={(e) => handleChangeTag(e.target.value)}
+            readOnly
             onClick={handleGetTags}
             placeholder="Thẻ... (tối đa 5 thẻ)"
             className="w-full py-2 outline-none"

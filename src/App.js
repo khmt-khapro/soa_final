@@ -77,14 +77,8 @@ function App() {
           </Route>
         </Route>
         <Route path="activate" element={<ActivateAccount />} />
-        <Route
-          path="signin"
-          element={accessToken ? <Navigate to="/" /> : <Signin />}
-        />
-        <Route
-          path="signup"
-          element={accessToken ? <Navigate to="/" /> : <Signup />}
-        />
+        <Route path="signin" element={<Signin />} />
+        <Route path="signup" element={<Signup />} />
         <Route path="forgot-password" element={<ForgetPassword />} />
         <Route path="create-new-password" element={<CreatNewPassword />} />
         <Route path="*" element={<NoPage />} />
