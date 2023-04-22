@@ -1,5 +1,6 @@
 import {
   BrowserRouter,
+  Navigate,
   Route,
   Routes,
   useLocation,
@@ -29,6 +30,7 @@ import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ActivateAccount from "./pages/ActivateAccount";
+import CreatNewPassword from "./pages/CreateNewPassword";
 
 function App() {
   const message = useSelector((state) => state.messageStore?.message);
@@ -36,11 +38,20 @@ function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const publicRoutes = ["/", "/tag", "/signin", "/signup"];
+  const publicRoutes = [
+    "/",
+    "/tag",
+    "/signin",
+    "/signup",
+    "/forgot-password",
+    "/create-new-password",
+    "/activate",
+  ];
 
   useEffect(() => {
-    if (!publicRoutes.includes(pathname) && !user?.accessToken)
+    if (!publicRoutes.includes(pathname) && !user?.accessToken) {
       navigate("/signin");
+    }
   }, [pathname]);
 
   return (
@@ -66,9 +77,16 @@ function App() {
           </Route>
         </Route>
         <Route path="activate" element={<ActivateAccount />} />
-        <Route path="signin" element={<Signin />} />
-        <Route path="signup" element={<Signup />} />
+        <Route
+          path="signin"
+          element={accessToken ? <Navigate to="/" /> : <Signin />}
+        />
+        <Route
+          path="signup"
+          element={accessToken ? <Navigate to="/" /> : <Signup />}
+        />
         <Route path="forgot-password" element={<ForgetPassword />} />
+        <Route path="create-new-password" element={<CreatNewPassword />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
       <ToastContainer />

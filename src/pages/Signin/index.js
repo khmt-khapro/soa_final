@@ -8,7 +8,7 @@ import { reset, signin } from "../../redux/authSlice";
 
 function SigninPage() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { loading, error, success, message } = useSelector(
     (state) => state.auth
@@ -61,7 +61,7 @@ function SigninPage() {
           <div className="flex items-center justify-center px-4 py-8 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
             <div className="w-[75%] md:w-[50%] lg:w-[75%]">
               <h2 className="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl">
-                Đăng ký
+                Đăng nhập
               </h2>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
                 Bạn chưa có tài khoản? {" "}
@@ -159,6 +159,15 @@ function SigninPage() {
                   </div>
                 </div>
               </form>
+
+              <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
+                <Link
+                  to={"/forgot-password"}
+                  className="font-medium text-indigo-600 transition-all duration-200 hover:text-indigo-700 hover:underline focus:text-indigo-700"
+                >
+                  Quên mật khẩu?
+                </Link>
+              </p>
             </div>
           </div>
 
