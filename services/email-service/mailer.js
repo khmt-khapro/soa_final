@@ -89,7 +89,7 @@ const getMailoptions = (data) => {
       html: ` 
         <div>
             <p>If you are forgot your password, click the button below to create new password. If not, ignore this email</p>
-            <a style="padding: 10px 20px; border-radius: 8px; background: #346bc2; color: white"  href='http://localhost:3000/forgot-password?token=${data.resetToken}'> Click here </a>
+            <a style="padding: 10px 20px; border-radius: 8px; background: #346bc2; color: white"  href='http://localhost:3000/create-new-password?token=${data.resetToken}'> Click here </a>
         </div>`,
     },
   }
@@ -100,6 +100,10 @@ const getMailoptions = (data) => {
 const handleSendMail = async (data) => {
   try {
     const mailOptions = getMailoptions(data)
+    console.log(
+      "🚀 ~ file: mailer.js:103 ~ handleSendMail ~ mailOptions:",
+      mailOptions
+    )
 
     await send_mail(mailOptions)
   } catch (error) {
