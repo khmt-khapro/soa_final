@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
+<<<<<<< Updated upstream
 import { Link, useNavigate } from "react-router-dom";
+=======
+import { Link, Navigate } from "react-router-dom";
+>>>>>>> Stashed changes
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +12,11 @@ import { reset, signin } from "../../redux/authSlice";
 
 function SigninPage() {
   const dispatch = useDispatch();
+<<<<<<< Updated upstream
   const navigate = useNavigate();
+=======
+  const navigate = Navigate();
+>>>>>>> Stashed changes
 
   const { loading, error, success, message } = useSelector(
     (state) => state.auth
@@ -23,7 +31,11 @@ function SigninPage() {
     if (success) {
       toast.success(message);
       dispatch(reset());
+<<<<<<< Updated upstream
       navigate('/')
+=======
+      navigate("/");
+>>>>>>> Stashed changes
     }
   }, [success, error]);
 
@@ -64,7 +76,11 @@ function SigninPage() {
                 Đăng nhập
               </h2>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
+<<<<<<< Updated upstream
                 Bạn chưa có tài khoản? {" "}
+=======
+                Bạn chưa có tài khoản?
+>>>>>>> Stashed changes
                 <Link
                   to={"/signup"}
                   href=""
