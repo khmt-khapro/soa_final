@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { createPost } from "../../redux/apis/post";
 import { Link } from "react-router-dom";
 import RichText from "../RichText";
 import { postModules } from "../../constants/modules";
-import { useSelector } from "react-redux";
 
 // const CustomFormat = Quill.import('blots/block')
 // CustomFormat.className = 'align-center'
 // Quill.register(CustomFormat, true)
 
 function CreatePost() {
-  
   // const posts = useSelector(state => state.postStore?.post);
   // const handleCreatePost = (value) => {
   //   const post = {id: posts.length,content: value, emojis: {'thumbs-up': 0, 'heart': 0, 'face-surprise': 0, 'face-smile': 0, 'face-sad-cry': 0, 'face-angry': 0}, comments: []}
-    
+
   //   return createPost(post);
   // }
 
@@ -30,7 +28,13 @@ function CreatePost() {
           <span>Trở về</span>
         </Link>
       </div>
-      <RichText customClass="" path="/" modules={postModules} handleFunction={createPost} message="Bài đăng đã được tạo!" />
+      <RichText
+        customClass=""
+        path="/"
+        modules={postModules}
+        handleFunction={createPost}
+        message="Bài đăng đã được tạo!"
+      />
       {/* <div dangerouslySetInnerHTML={{__html:value}}></div> */}
     </div>
   );

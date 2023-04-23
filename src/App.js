@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import {
   BrowserRouter,
   Navigate,
@@ -8,9 +7,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 // import "./App.css";
-=======
-import { Navigate, Route, Routes } from "react-router-dom";
->>>>>>> Stashed changes
 import Layout from "./components/Layout";
 import Signin from "./pages/Signin";
 import NoPage from "./components/NoPage";
@@ -29,10 +25,7 @@ import {
 } from "./components/Profile";
 import CreatePost from "./components/CreatePost";
 import Toast from "./components/Toast";
-<<<<<<< Updated upstream
 import { useEffect, useState } from "react";
-=======
->>>>>>> Stashed changes
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -70,16 +63,8 @@ function App() {
       >
         {message && <Toast type={message?.type} message={message?.message} />}
       </div>
-<<<<<<< Updated upstream
 
       <Routes>
-=======
-      {/* <button className="mt-[500px]" onClick={() => setShowMessage({isDone: !showMessage.isDone || false})}>showMessage</button> */}
-
-      <Routes>
-        {/* <Route path="/" element={<Layout />} /> */}
-        {/* public route */}
->>>>>>> Stashed changes
         <Route path="/" element={<Home />}>
           <Route index element={<NewFeed />} />
           <Route path="/reading-list" element={<ReadingList />} />
@@ -95,15 +80,9 @@ function App() {
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
         <Route path="forgot-password" element={<ForgetPassword />} />
-<<<<<<< Updated upstream
         <Route path="create-new-password" element={<CreatNewPassword />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
-=======
-        <Route path="*" element={<NoPage />} />
-      </Routes>
-
->>>>>>> Stashed changes
       <ToastContainer />
     </div>
   );
