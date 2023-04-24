@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./post.css";
 import Comment from "./Comment";
+import moment from "moment";
 
 function Post() {
   // const comments = useSelector((state) => state.commentStore.comment);
@@ -25,36 +26,48 @@ function Post() {
   };
 
   return (
-    <div className="mt-[63px]">
+    <div className="mt-[64px]">
       {posts?.map((post, index) => (
-        <div key={index} className=" bg-gray-100 rounded shadow my-[10px]">
+        <div key={index} className=" bg-gray-100 rounded shadow my-[20px]">
           <div className="flex items-center gap-x-3 p-[10px] pb-0">
             <img
               className="w-10 h-10 hover:opacity-80 transition-opacity duration-200 cursor-pointer"
-              src="./images/google-icon.png"
+              src={post?.author?.avatar}
               alt="avatar"
             />
             <div className="text-left">
               <p className="text-sm font-medium hover:text-sky-500 transition-colors duration-200 cursor-pointer">
-                Name
+                {post.author.username}
               </p>
-              <p className="text-[12px] text-gray-400">Date</p>
+              <p className="text-[12px] text-gray-400">
+                {moment(post.createdAt).fromNow()}
+              </p>
             </div>
           </div>
+
+          <h2 className="flex items-center px-14 py-2 pb-0 font-bold text-2xl">
+            {post.title || ""}
+          </h2>
+
+          <div className="flex items-center gap-x-3 px-14 py-2">
+            {post.tags?.map((tag, index) => (
+              <span>#{tag.name}</span>
+            ))}
+          </div>
           {/* <style>{previewStyle}</style> */}
-          <div
+          {/* <div
             dangerouslySetInnerHTML={{ __html: post.content }}
             className="post p-[10px]"
-          ></div>
+          ></div> */}
 
-          <div className="flex justify-between items-center mt-[40px] border-black border-opacity-10 border-t-[1px]">
+          <div className="flex justify-between items-center mt-[20px] border-black border-opacity-10 border-t-[1px]">
             <div className="flex items-center justify-start gap-x-5">
               <div
                 onMouseOver={() => hoverToggleReaction(index, true)}
                 onMouseOut={() => hoverToggleReaction(index, false)}
                 className="flex justify-center gap-x-3 rounded-bl px-3 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200 relative"
               >
-                <p>10000</p>
+                <p>{post.likes.length}</p>
                 <div className="">Lượt thích</div>
 
                 {displayReaction[index] && (
@@ -91,8 +104,12 @@ function Post() {
                 className="flex justify-center items-center gap-x-3 px-3 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200"
               >
                 <i className="fa-solid fa-comment"></i>
-                <p>{post.comments?.length || 0} Bình luận</p>
+                <p>Thêm bình luận</p>
               </div>
+            </div>
+
+            <div className="ml-[40%]">
+              <span>{post?.time_to_read || 5} phút đọc</span>
             </div>
             <div>
               <i className="px-5 py-3 cursor-pointer fa-solid fa-bookmark hover:bg-gray-200 transition-colors duration-200 rounded-br"></i>

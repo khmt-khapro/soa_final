@@ -24,7 +24,7 @@ const PostSlice = createSlice({
     },
 
     getPost: (state, action) => {
-      state.post = action.payload;
+      state.post = [...state.post, ...action.payload];
     },
     getTop: (state, action) => {
       state.top = action.payload;
@@ -35,8 +35,12 @@ const PostSlice = createSlice({
     revelantPost: (state, action) => {
       state.post = action.payload;
     },
+    resetPost: (state) => {
+      state.post = [];
+    },
   },
 });
 
-export const { createPost, updatePost, addComment, getPost } = PostSlice.actions;
+export const { createPost, updatePost, addComment, getPost, resetPost } =
+  PostSlice.actions;
 export default PostSlice.reducer;

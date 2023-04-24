@@ -1,3 +1,4 @@
+import { getPost } from "../postSlice";
 import { getTags } from "../tagSlice";
 import axiosInstance from "./baseRequest";
 
@@ -5,15 +6,17 @@ import axiosInstance from "./baseRequest";
 // const axiosInstance = axios.create({ baseURL: BASE_URL });
 
 // get newsfeed api
-export const getNewsFeed = async () => {
-  const { data } = await axiosInstance.post(`/posts/relevant`);
-  return data;
+export const getNewsFeed = async (dispatch, query) => {
+  const { data } = await axiosInstance.get(
+    `/posts/${query.filter}?page=${query.page}`
+  );
+  dispatch(getPost(data.data.posts));
 };
 
 // create post api
 export const createPost = async (postData) => {
   const response = await axiosInstance.post("/posts", postData);
-  console.log(response)
+  console.log(response);
   return response.data.post;
 };
 
@@ -34,5 +37,5 @@ export const editPost = async (postID, desc) => {
 // get tag api
 export const getAllTags = async (dispatch) => {
   const res = await axiosInstance.get(`/posts/tags`);
-  dispatch(getTags(res.data.data.tags))
+  dispatch(getTags(res.data.data.tags));
 };
