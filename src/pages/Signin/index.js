@@ -23,7 +23,7 @@ function SigninPage() {
     if (success) {
       toast.success(message);
       dispatch(reset());
-      navigate('/')
+      navigate("/");
     }
   }, [success, error]);
 
@@ -64,7 +64,7 @@ function SigninPage() {
                 Đăng nhập
               </h2>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-300">
-                Bạn chưa có tài khoản? {" "}
+                Bạn chưa có tài khoản?
                 <Link
                   to={"/signup"}
                   href=""

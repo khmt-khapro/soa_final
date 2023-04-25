@@ -27,7 +27,7 @@ import CreatePost from "./components/CreatePost";
 import Toast from "./components/Toast";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ActivateAccount from "./pages/ActivateAccount";
 import CreatNewPassword from "./pages/CreateNewPassword";
