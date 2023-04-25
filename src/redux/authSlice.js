@@ -6,6 +6,7 @@ import {
   signinRequest,
   signupRequest,
 } from "./apis/auth.axios";
+import { followTag, unfollowTag } from "./apis/post";
 
 // get user from local storage
 // const accessToken = JSON.parse(localStorage.getItem("accessToken"));
@@ -87,15 +88,27 @@ export const createNewPassword = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("auth/logout", async () => {
-  
-});
+export const logout = createAsyncThunk("auth/logout", async () => {});
 
 export const updateInfo = createAsyncThunk(
   "auth/updateInfo",
   async (info, thunkAPI) => {
     try {
       return await signupRequest.updateInfo(info);
+    } catch (error) {
+      const message = error.response.data.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const updateFollowTags = createAsyncThunk(
+  "auth/updateFollowTag",
+  async ({ tagId, userId, following_tags }, thunkAPI) => {
+    try {
+      return following_tags.includes(tagId)
+        ? await unfollowTag(tagId, userId)
+        : await followTag(tagId, userId);
     } catch (error) {
       const message = error.response.data.message;
       return thunkAPI.rejectWithValue(message);
@@ -197,11 +210,11 @@ const authSlice = createSlice({
         state.error = true;
         state.message = action.payload;
       })
-      
+
       // Logout
       .addCase(logout.fulfilled, (state) => {
-        console.log("store logout update")
-        localStorage.removeItem('user')
+        console.log("store logout update");
+        localStorage.removeItem("user");
         state.user = null;
       })
 
@@ -219,6 +232,10 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = true;
         state.message = action.payload;
+      })
+      .addCase(updateFollowTags.fulfilled, (state, action) => {
+        state.user = { ...state.user, following_tags: action.payload };
+        localStorage.setItem("user", JSON.stringify(state.user));
       });
   },
 });

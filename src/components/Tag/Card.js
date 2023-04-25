@@ -1,76 +1,37 @@
-import React from 'react'
+import React from "react";
 
-function Card() {
+function Card({ allTags, handleToggleFollowTag, tagsFollow = [] }) {
   return (
-    <div className='flex gap-3 flex-wrap justify-center'>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p className='font-bold'>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
+    <div className="flex gap-y-3 flex-wrap justify-between">
+      {allTags?.map((tag) => (
+        <div
+          key={tag._id}
+          className="basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4"
+        >
+          <p className="font-bold">#{tag.name}</p>
+          <p>{tag.description}</p>
+          <p>
+            <span className="font-bold">{tag.count_post}</span> posts published
+          </p>
+          {!tagsFollow.includes(tag._id) ? (
+            <button
+              className="py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300"
+              onClick={() => handleToggleFollowTag(tag._id)}
+            >
+              Theo dõi
+            </button>
+          ) : (
+            <button
+              className="py-2 rounded-md text-white bg-gray-500 hover:opacity-80 transition-opacity duration-300"
+              onClick={() => handleToggleFollowTag(tag._id)}
+            >
+              Bỏ theo dõi
+            </button>
+          )}
         </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[100%] lg:basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
-        <div className='basis-[49%] bg-gray-200 shadow-sm rounded-md p-4 flex flex-col gap-y-4'>
-            <p>#frontend</p>
-            <p>content</p>
-            <p><span className='font-bold'>100</span> posts published</p>
-            <button className='px-4 py-2 rounded-md text-white bg-emerald-500 hover:opacity-80 transition-opacity duration-300'>Theo dõi</button>
-        </div>
+      ))}
     </div>
-  )
+  );
 }
 
-export default Card
+export default Card;
