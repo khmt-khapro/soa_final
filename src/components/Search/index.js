@@ -24,7 +24,7 @@ function Search({ placeHolder, customClass }) {
       />
       <i
         onClick={() => console.log(search)}
-        className="fa-solid fa-magnifying-glass absolute top-[50%] -translate-y-[50%] right-4 text-lg cursor-pointer"
+        className="fa-solid fa-magnifying-glass absolute top-[50%] -translate-y-[50%] right-4 text-gray-500 text-lg cursor-pointer"
       ></i>
     </div>
   );

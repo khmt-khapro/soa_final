@@ -13,7 +13,7 @@ export const getNewsFeed = async () => {
 // create post api
 export const createPost = async (postData) => {
   const response = await axiosInstance.post("/posts", postData);
-  console.log(response)
+  console.log(response);
   return response.data.post;
 };
 
@@ -34,5 +34,19 @@ export const editPost = async (postID, desc) => {
 // get tag api
 export const getAllTags = async (dispatch) => {
   const res = await axiosInstance.get(`/posts/tags`);
-  dispatch(getTags(res.data.data.tags))
+  dispatch(getTags(res.data.data.tags));
+};
+
+//follow tag api
+export const followTag = async (tagID, userID) => {
+  const res = await axiosInstance.post(`posts/${tagID}/follow`, { userID });
+  console.log("api follow called");
+  return res.data.tagfollowed;
+};
+
+//unfollow tag api
+export const unfollowTag = async (tagId, userID) => {
+  const res = await axiosInstance.post(`posts/${tagId}/unfollow`, { userID });
+  console.log("api unfollow called");
+  return res.data.tagfollowed;
 };

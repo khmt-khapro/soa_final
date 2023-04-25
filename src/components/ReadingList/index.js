@@ -4,15 +4,17 @@ import Search from "../Search";
 function ReadingList() {
   return (
     <div
-      className={`mx-auto w-[calc(100%-20px)] sm:w-[calc(50%-20px)] mt-[10px]`}
+      className={`mx-auto w-[calc(100%-20px)] sm:w-[calc(50%-20px)]`}
     >
-      <div className="font-medium text-emerald-600 text-2xl">
-        Bài đăng đã lưu (0)
+      <div className="flex flex-col gap-y-[10px] md:flex-row items-center justify-between mb-[10px]">
+        <div className="font-medium text-emerald-600 text-2xl text-center md:text-left">
+        Đã lưu (0)
+        </div>
+        <Search
+          placeHolder="Nhập tên thẻ"
+          customClass="w-full md:w-[200px]"
+        />
       </div>
-      <Search
-        placeHolder="Nhập từ khóa tìm kiếm!"
-        customClass="w-full sm:w-[300px] mx-auto my-4"
-      />
       <div className="bg-gray-100 rounded p-[10px] shadow-md relative flex items-center gap-x-4">
         <img
           className="w-10 h-10"

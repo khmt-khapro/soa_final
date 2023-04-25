@@ -14,7 +14,7 @@ const Home = () => {
     <div className="">
       <Header path={path[1]} />
       {path[1] !== "profile" && path[1] !== "create-post" ? (
-        <div className="flex mt-[60px] gap-x-[10px] relative">
+        <div className="flex mt-[70px] gap-x-[10px] relative">
           <SideBar list={leftSideBar} customClass="left-[10px]"/>
           <Outlet />
           <Paragraph customClass="right-[10px]"/>
