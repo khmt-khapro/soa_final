@@ -10,7 +10,7 @@ const category = [
   { name: "Hàng đầu", filter: "top" },
 ];
 
-const topFilter = [
+const topFilters = [
   { name: "Tuần", filter: "week" },
   { name: "Tháng", filter: "month" },
   { name: "Năm", filter: "year" },
@@ -22,17 +22,22 @@ function NewFeed() {
   const [currentPage, setCurrentPage] = useState(1);
   const [select, setSelect] = useState(category[0].name);
   const [filter, setFilter] = useState(category[0].filter);
+  const [topFilter, setTopFilter] = useState(topFilters[0].filter);
 
   // fetch post base on "select"
   useEffect(() => {
-    getNewsFeed(dispatch, { filter, page: currentPage });
-  }, [filter, currentPage]);
+    let query = { filter, page: currentPage };
+    if (filter === "top") {
+      query = { ...query, topFilter };
+    }
+    getNewsFeed(dispatch, query);
+  }, [filter, currentPage, topFilter]);
 
   return (
     <div
       className={`mx-auto w-[calc(100%-20px)] sm:w-[calc(50%-20px)] relative `}
     >
-      <div className="flex justify-around sm:justify-center text-center gap-x-4 fixed left-[50%] -translate-x-[50%] z-20 bg-white w-[calc(100%-20px)] sm:w-[calc(50%-20px)] py-[10px] rounded-b">
+      <div className="flex justify-start text-center gap-x-4 fixed left-[50%] -translate-x-[50%] z-20 bg-white w-[calc(100%-20px)] sm:w-[calc(50%-20px)] py-[10px] rounded-b">
         {category?.map((item) => (
           <div
             key={item.name}
@@ -40,7 +45,9 @@ function NewFeed() {
               setSelect(item.name);
               setFilter(item.filter);
               setCurrentPage(1);
-              dispatch(resetPost());
+              if (item.name !== select) {
+                dispatch(resetPost());
+              }
             }}
             className={`border-b-[0.5px] ${
               item.name === select
@@ -52,6 +59,21 @@ function NewFeed() {
           </div>
         ))}
       </div>
+
+      {/* top filter: week, month, year */}
+      {filter === "top" && (
+        <div className="flex justify-end mt-[60px] text-center gap-x-4 py-[10px]">
+          {topFilters?.map((item) => (
+            <div
+              className="px-4 py-2"
+              onClick={() => setTopFilter(item.filter)}
+            >
+              {item.name}
+            </div>
+          ))}
+        </div>
+      )}
+
       <Post />
 
       {/* load more button */}

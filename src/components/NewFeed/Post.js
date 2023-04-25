@@ -3,9 +3,11 @@ import { useSelector } from "react-redux";
 import "./post.css";
 import Comment from "./Comment";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 function Post() {
   // const comments = useSelector((state) => state.commentStore.comment);
+  const navigate = useNavigate();
   const posts = useSelector((state) => state.postStore?.post);
   const [displayReaction, setDisplayReaction] = useState(
     Array(posts?.length).fill(false)
@@ -25,10 +27,18 @@ function Post() {
     setIndexShow(newIndex);
   };
 
+  const hanldeClickPost = (post) => {
+    navigate(`/post/${post._id}`);
+  };
+
   return (
     <div className="mt-[64px]">
       {posts?.map((post, index) => (
-        <div key={index} className=" bg-gray-100 rounded shadow my-[20px]">
+        <div
+          key={index}
+          className=" bg-gray-100 rounded shadow my-[20px]"
+          onClick={() => hanldeClickPost(post)}
+        >
           <div className="flex items-center gap-x-3 p-[10px] pb-0">
             <img
               className="w-10 h-10 hover:opacity-80 transition-opacity duration-200 cursor-pointer"

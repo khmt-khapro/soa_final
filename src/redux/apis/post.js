@@ -7,9 +7,11 @@ import axiosInstance from "./baseRequest";
 
 // get newsfeed api
 export const getNewsFeed = async (dispatch, query) => {
-  const { data } = await axiosInstance.get(
-    `/posts/${query.filter}?page=${query.page}`
-  );
+  let url = `/posts/${query.filter}?page=${query.page}`;
+  if (query.topFilter) {
+    url = `${url}&filter=${query.topFilter}`;
+  }
+  const { data } = await axiosInstance.get(url);
   dispatch(getPost(data.data.posts));
 };
 
