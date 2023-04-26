@@ -14,7 +14,11 @@ router.post("/", postController.createPost)
 
 router.get("/relevant", postController.getPostsRelevant)
 
+router.get("/:postID/related", postController.getRelatedPosts)
+
 router.get("/bookmarks", postController.getBookmarks)
+
+router.get("/:postID", postController.getPostContent)
 
 router.patch("/:postID", postController.updatePost)
 
@@ -47,5 +51,9 @@ router.delete("/:postID/comments/:commentID", commentController.deleteComment)
 
 // tags
 router.get("/tags", tagController.getTags)
+
+router.post("/:tagID/follow", tagController.followTag)
+
+router.post("/:tagID/unfollow", tagController.unfollowTag)
 
 module.exports = router
