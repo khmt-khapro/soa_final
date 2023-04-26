@@ -4,9 +4,11 @@ import "./post.css";
 import Comment from "./Comment";
 import moment from "moment";
 import { updatePostReaction } from "../../redux/postSlice";
+import { useNavigate } from "react-router-dom";
 
 function Post() {
   // const comments = useSelector((state) => state.commentStore.comment);
+  const navigate = useNavigate();
   const posts = useSelector((state) => state.postStore?.post);
   const { _id } = useSelector((state) => state.auth?.user);
   
@@ -22,6 +24,10 @@ function Post() {
 
   const handleToggleReactionPost = (postID, liked) => {
     dispatch(updatePostReaction({ postID, liked, userID: _id }));
+  }
+  
+  const hanldeClickPost = (post) => {
+    navigate(`/post/${post._id}`);
   };
 
   return (
@@ -44,7 +50,10 @@ function Post() {
             </div>
           </div>
 
-          <h2 className="flex items-center px-14 py-2 pb-0 font-bold text-2xl">
+          <h2
+            className="flex items-center px-14 py-2 pb-0 font-bold text-2xl cursor-pointer"
+            onClick={() => hanldeClickPost(post)}
+          >
             {post.title || ""}
           </h2>
 
