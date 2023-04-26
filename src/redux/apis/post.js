@@ -22,6 +22,18 @@ export const createPost = async (postData) => {
   return response.data.post;
 };
 
+// get related posts api
+export const getRelatedPosts = async (postID) => {
+  const { data } = await axiosInstance.get(`/posts/${postID}/related`);
+  return data.data.relatedPosts;
+};
+
+// get post api
+export const getPostConent = async (postID) => {
+  const { data } = await axiosInstance.get(`/posts/${postID}`);
+  return data.data.post;
+};
+
 // del post api
 export const deletePost = async (postID) => {
   const response = await axiosInstance.delete(`/posts/${postID}`);

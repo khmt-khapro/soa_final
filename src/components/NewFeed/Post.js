@@ -34,11 +34,7 @@ function Post() {
   return (
     <div className="mt-[64px]">
       {posts?.map((post, index) => (
-        <div
-          key={index}
-          className=" bg-gray-100 rounded shadow my-[20px]"
-          onClick={() => hanldeClickPost(post)}
-        >
+        <div key={index} className=" bg-gray-100 rounded shadow my-[20px]">
           <div className="flex items-center gap-x-3 p-[10px] pb-0">
             <img
               className="w-10 h-10 hover:opacity-80 transition-opacity duration-200 cursor-pointer"
@@ -55,7 +51,10 @@ function Post() {
             </div>
           </div>
 
-          <h2 className="flex items-center px-14 py-2 pb-0 font-bold text-2xl">
+          <h2
+            className="flex items-center px-14 py-2 pb-0 font-bold text-2xl cursor-pointer"
+            onClick={() => hanldeClickPost(post)}
+          >
             {post.title || ""}
           </h2>
 
@@ -118,9 +117,6 @@ function Post() {
               </div>
             </div>
 
-            <div className="ml-[40%]">
-              <span>{post?.time_to_read || 5} phút đọc</span>
-            </div>
             <div>
               <i className="px-5 py-3 cursor-pointer fa-solid fa-bookmark hover:bg-gray-200 transition-colors duration-200 rounded-br"></i>
             </div>
