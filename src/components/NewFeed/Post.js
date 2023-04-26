@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./post.css";
 import Comment from "./Comment";
 import moment from "moment";
+import { updatePostReaction } from "../../redux/postSlice";
 
 function Post() {
   // const comments = useSelector((state) => state.commentStore.comment);
   const posts = useSelector((state) => state.postStore?.post);
-  const [displayReaction, setDisplayReaction] = useState(
-    Array(posts?.length).fill(false)
-  );
+  const { _id } = useSelector((state) => state.auth?.user);
+  
+  const dispatch = useDispatch();
 
   const [indexShow, setIndexShow] = useState([null, false]);
-
-  const hoverToggleReaction = (index, state) => {
-    const newState = [...displayReaction];
-    newState[index] = state;
-    setDisplayReaction(newState);
-  };
 
   const handleIndexShow = (index) => {
     const newIndex =
       index === indexShow[0] ? [index, !indexShow[1]] : [index, true];
     setIndexShow(newIndex);
+  };
+
+  const handleToggleReactionPost = (postID, liked) => {
+    dispatch(updatePostReaction({ postID, liked, userID: _id }));
   };
 
   return (
@@ -37,7 +36,7 @@ function Post() {
             />
             <div className="text-left">
               <p className="text-sm font-medium hover:text-sky-500 transition-colors duration-200 cursor-pointer">
-                {post.author.username}
+                {post.author?.username || "unknown"}
               </p>
               <p className="text-[12px] text-gray-400">
                 {moment(post.createdAt).fromNow()}
@@ -51,7 +50,7 @@ function Post() {
 
           <div className="flex items-center gap-x-3 px-14 py-2">
             {post.tags?.map((tag, index) => (
-              <span>#{tag.name}</span>
+              <span key={tag.name}>#{tag.name}</span>
             ))}
           </div>
           {/* <style>{previewStyle}</style> */}
@@ -61,43 +60,13 @@ function Post() {
           ></div> */}
 
           <div className="flex justify-between items-center mt-[20px] border-black border-opacity-10 border-t-[1px]">
-            <div className="flex items-center justify-start gap-x-5">
+            <div className="flex items-center gap-x-4">
               <div
-                onMouseOver={() => hoverToggleReaction(index, true)}
-                onMouseOut={() => hoverToggleReaction(index, false)}
-                className="flex justify-center gap-x-3 rounded-bl px-3 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200 relative"
+                onClick={() => handleToggleReactionPost(post._id, post.likes)}
+                className={`flex justify-center items-center gap-x-3 px-3 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200 relative ${post.likes.includes(_id) && 'text-sky-500'}`}
               >
                 <p>{post.likes.length}</p>
                 <div className="">Lượt thích</div>
-
-                {displayReaction[index] && (
-                  <div className="absolute flex justify-between left-0 -top-[48px] gap-x-3 rounded-xl p-2 bg-gray-200 bg-opacity-70">
-                    <i
-                      onClick={() => hoverToggleReaction(index, false)}
-                      className="text-2xl fa-solid fa-thumbs-up cursor-pointer text-sky-500 hover:scale-150 transition-all duration-300"
-                    ></i>
-                    <i
-                      onClick={() => hoverToggleReaction(index, false)}
-                      className="text-2xl fa-solid fa-heart cursor-pointer text-pink-700 hover:scale-150 transition-all duration-300"
-                    ></i>
-                    <i
-                      onClick={() => hoverToggleReaction(index, false)}
-                      className="text-2xl fa-solid fa-face-surprise cursor-pointer text-emerald-400 hover:scale-150 transition-all duration-300"
-                    ></i>
-                    <i
-                      onClick={() => hoverToggleReaction(index, false)}
-                      className="text-2xl fa-solid fa-face-smile cursor-pointer text-green-300 hover:scale-150 transition-all duration-300"
-                    ></i>
-                    <i
-                      onClick={() => hoverToggleReaction(index, false)}
-                      className="text-2xl fa-solid fa-face-sad-cry cursor-pointer text-blue-500 hover:scale-150 transition-all duration-300"
-                    ></i>
-                    <i
-                      onClick={() => hoverToggleReaction(index, false)}
-                      className="text-2xl fa-solid fa-face-angry cursor-pointer text-red-600 hover:scale-150 transition-all duration-300"
-                    ></i>
-                  </div>
-                )}
               </div>
               <div
                 onClick={() => handleIndexShow(index)}
@@ -108,15 +77,13 @@ function Post() {
               </div>
             </div>
 
-            <div className="ml-[40%]">
-              <span>{post?.time_to_read || 5} phút đọc</span>
-            </div>
-            <div>
+            <div className="flex items-center">
+              <span className="mr-2">{post?.time_to_read || 5} phút đọc</span>
               <i className="px-5 py-3 cursor-pointer fa-solid fa-bookmark hover:bg-gray-200 transition-colors duration-200 rounded-br"></i>
             </div>
           </div>
           {index === indexShow[0] && indexShow[1] && (
-            <Comment idPost={post?.id} comments={post?.comments} />
+            <Comment postID={post?._id} userID={_id} />
           )}
         </div>
       ))}

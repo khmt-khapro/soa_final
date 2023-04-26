@@ -30,9 +30,9 @@ function NewFeed() {
 
   return (
     <div
-      className={`mx-auto w-[calc(100%-20px)] sm:w-[calc(50%-20px)] relative `}
+      className={`mx-auto w-[calc(100%-20px)] sm:w-[calc(50%-20px)] relative`}
     >
-      <div className="flex justify-around sm:justify-center text-center gap-x-4 fixed left-[50%] -translate-x-[50%] z-20 bg-white w-[calc(100%-20px)] sm:w-[calc(50%-20px)] py-[10px] rounded-b">
+      <div className="flex justify-around sm:justify-center text-center gap-x-4 fixed top-[60px] left-[50%] -translate-x-[50%] z-20 bg-white w-[calc(100%)] sm:w-[calc(50%)] py-[10px]">
         {category?.map((item) => (
           <div
             key={item.name}

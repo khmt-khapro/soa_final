@@ -53,3 +53,17 @@ export const unfollowTag = async (tagId, userID) => {
   console.log("api unfollow called");
   return res.data.tagfollowed;
 };
+
+export const likePost = async (postID, userID) => {
+  const res = await axiosInstance.post(`posts/${postID}/like`);
+  return res.data.status === "success"
+    ? { postID, userID, status: "like" }
+    : {};
+};
+
+export const unlikePost = async (postID, userID) => {
+  const res = await axiosInstance.post(`posts/${postID}/unlike`);
+  return res.data.status === "success"
+    ? { postID, userID, status: "unlike" }
+    : {};
+};

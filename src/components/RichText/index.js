@@ -10,20 +10,6 @@ import { createPost, getAllTags } from "../../redux/apis/post";
 import { useDispatch, useSelector } from "react-redux";
 import { removeTags } from "../../redux/tagSlice";
 
-const styleModules = `
-.ql-toolbar {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    border-radius: 3px;
-    background-color: white;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-.ql-editor {
-    border-top: 0.5px solid #ccc;
-    /* outline: none; */
-}`;
-
 function RichText({ customClass, path = "", modules, handleFunction }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,18 +52,6 @@ function RichText({ customClass, path = "", modules, handleFunction }) {
     };
   }, []);
 
-  // const handleCreate = (value) => {
-  //   dispatch(
-  //     createMessage({
-  //       type: "success",
-  //       message: message,
-  //     })
-  //   );
-  //   setValue("");
-  //   dispatch(handleFunction(value));
-  //   path && navigate(path);
-  // };
-
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -105,7 +79,7 @@ function RichText({ customClass, path = "", modules, handleFunction }) {
         pathname === "/" && "bg-gray-100"
       }`}
     >
-      <form action="" method="POST" className="" onSubmit={formik.handleSubmit}>
+      <form action="" method="POST" onSubmit={formik.handleSubmit}>
         <input
           type="text"
           id="title"
@@ -188,7 +162,6 @@ function RichText({ customClass, path = "", modules, handleFunction }) {
           value={contentValue}
           onChange={setContentValue}
         />
-        {pathname === "/" && <style>{styleModules}</style>}
         <div className="flex justify-end gap-x-3 p-[10px]">
           <button
             type="submit"
