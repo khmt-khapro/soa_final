@@ -30,7 +30,7 @@ export const getRelatedPosts = async (postID) => {
 
 // get post api
 export const getPostConent = async (postID) => {
-  const { data } = await axiosInstance.get(`/posts/${postID}`);
+  const { data } = await axiosInstance.get(`/posts/${postID}/detail`);
   return data.data.post;
 };
 
