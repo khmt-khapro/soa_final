@@ -11,8 +11,6 @@ function Tag() {
   const allTags = useSelector((state) => state.tagStore?.tags);
   const {_id, following_tags} = useSelector((state) => state.auth?.user);
 
-  
-
   const handleToggleFollowTag = (tagId) => {
     console.log("handle called");
     dispatch(updateFollowTags({tagId, userId: _id, following_tags}))

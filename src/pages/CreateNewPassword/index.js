@@ -73,13 +73,13 @@ const CreatNewPassword = () => {
             <div className="mt-4">
               <label
                 htmlFor="password"
-                className="text-base font-medium text-gray-900 dark:text-gray-200"
+                className="text-base font-medium text-gray-900"
               >
                 Password
               </label>
               <div className="mt-2.5">
                 <input
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
+                  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-800 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
                   type="password"
                   placeholder="Nhập password của bạn"
                   id="password"
@@ -100,13 +100,13 @@ const CreatNewPassword = () => {
             <div className="mt-4">
               <label
                 htmlFor="passwordConfirm"
-                className="text-base font-medium text-gray-900 dark:text-gray-200"
+                className="text-base font-medium text-gray-900"
               >
                 PasswordConfirm
               </label>
               <div className="mt-2.5">
                 <input
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
+                  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-800 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900"
                   type="password"
                   placeholder="Nhập passwordConfirm của bạn"
                   id="passwordConfirm"

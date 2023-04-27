@@ -51,6 +51,7 @@ export const editPost = async (postID, desc) => {
 // get tag api
 export const getAllTags = async (dispatch) => {
   const res = await axiosInstance.get(`/posts/tags`);
+  console.log(res.data);
   dispatch(getTags(res.data.data.tags));
 };
 
@@ -68,6 +69,7 @@ export const unfollowTag = async (tagId, userID) => {
   return res.data.tagfollowed;
 };
 
+//like post api
 export const likePost = async (postID, userID) => {
   const res = await axiosInstance.post(`posts/${postID}/like`);
   return res.data.status === "success"
@@ -75,6 +77,7 @@ export const likePost = async (postID, userID) => {
     : {};
 };
 
+//like post api
 export const unlikePost = async (postID, userID) => {
   const res = await axiosInstance.post(`posts/${postID}/unlike`);
   return res.data.status === "success"

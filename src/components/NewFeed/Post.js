@@ -10,7 +10,7 @@ function Post() {
   // const comments = useSelector((state) => state.commentStore.comment);
   const navigate = useNavigate();
   const posts = useSelector((state) => state.postStore?.post);
-  const { _id } = useSelector((state) => state.auth?.user);
+  const { _id } = useSelector((state) => state.auth?.user) || {_id: null};
   
   const dispatch = useDispatch();
 
@@ -25,9 +25,9 @@ function Post() {
   const handleToggleReactionPost = (postID, liked) => {
     dispatch(updatePostReaction({ postID, liked, userID: _id }));
   }
-  
-  const hanldeClickPost = (post) => {
-    navigate(`/post/${post._id}`);
+
+  const handleClickPost = (post, isComment = false) => {
+    navigate(`/post/${post._id}`, { state: { isComment } });
   };
 
   return (
@@ -52,7 +52,7 @@ function Post() {
 
           <h2
             className="flex items-center px-14 py-2 pb-0 font-bold text-2xl cursor-pointer"
-            onClick={() => hanldeClickPost(post)}
+            onClick={() => handleClickPost(post)}
           >
             {post.title || ""}
           </h2>
@@ -78,11 +78,11 @@ function Post() {
                 <div className="">Lượt thích</div>
               </div>
               <div
-                onClick={() => handleIndexShow(index)}
+                onClick={() => handleClickPost(post, true)}
                 className="flex justify-center items-center gap-x-3 px-3 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200"
               >
                 <i className="fa-solid fa-comment"></i>
-                <p>Thêm bình luận</p>
+                <p>Bình luận</p>
               </div>
             </div>
 
@@ -91,9 +91,9 @@ function Post() {
               <i className="px-5 py-3 cursor-pointer fa-solid fa-bookmark hover:bg-gray-200 transition-colors duration-200 rounded-br"></i>
             </div>
           </div>
-          {index === indexShow[0] && indexShow[1] && (
+          {/* {index === indexShow[0] && indexShow[1] && (
             <Comment postID={post?._id} userID={_id} />
-          )}
+          )} */}
         </div>
       ))}
     </div>

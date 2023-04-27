@@ -8,10 +8,7 @@ import {
 } from "./apis/auth.axios";
 import { followTag, unfollowTag } from "./apis/post";
 
-// get user from local storage
-// const accessToken = JSON.parse(localStorage.getItem("accessToken"));
 const initialState = {
-  // accessToken: accessToken ? accessToken : null,
   error: false,
   success: false,
   loading: false,
@@ -152,14 +149,8 @@ const authSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = action.payload.message;
-        // state.accessToken = action.payload.data.accessToken;
         state.user = action.payload.data;
 
-        // set accessToken to local storage
-        // localStorage.setItem(
-        //   "accessToken",
-        //   JSON.stringify(action.payload.data.accessToken)
-        // );
         // set user data to local storage
         localStorage.setItem("user", JSON.stringify(action.payload.data));
       })

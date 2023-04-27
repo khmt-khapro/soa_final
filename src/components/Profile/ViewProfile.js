@@ -9,8 +9,8 @@ function ViewProfile() {
       <div className="h-[150px] bg-emerald-700 "></div>
       <div className="relative h-[300px] shadow-md mx-20 lg:mx-60 flex flex-col items-center rounded-b-sm">
         <div className="absolute left-[50%] -translate-x-[50%] -top-20">
-          {/* <img className='cursor-pointer w-40 h-40 rounded-full shadow-lg' src="./images/dev-icon.webp" alt="avatar" /> */}
-          <div className="w-40 h-40 bg-sky-700 rounded-full border-emerald-700 border-[5px] shadow-lg"></div>
+          <img className='cursor-pointer w-40 h-40 rounded-full shadow-lg bg-white' src={user?.avatar} alt="avatar" />
+          {/* <div className="w-40 h-40 bg-sky-700 rounded-full border-emerald-700 border-[5px] shadow-lg"></div> */}
         </div>
         <Link
           to="/profile/edit"
