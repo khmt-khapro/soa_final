@@ -24,7 +24,7 @@ function SideBar({ list, customClass }) {
 
   return (
     <div
-      className={`hidden sm:flex sm:flex-col h-[calc(100% - 70px)] w-[calc(25%-10px)] fixed ${customClass}`}
+      className={`hidden sm:flex sm:flex-col h-[calc(100% - 70px)] fixed ${customClass}`}
     >
       {list?.map((item) => (
         <div

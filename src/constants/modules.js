@@ -50,6 +50,5 @@ export const postModules = {
 export const commentModules = {
   toolbar: [
     ["image"],
-    ["clean"]
   ]
 };

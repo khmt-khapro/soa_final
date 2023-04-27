@@ -60,7 +60,7 @@ function NewFeed() {
         ))}
       </div>
 
-      {/* top filter: week, month, year */}
+      {/* top filter: week, month, year
       {filter === "top" && (
         <div className="flex justify-end mt-[60px] text-center gap-x-4 py-[10px]">
           {topFilters?.map((item) => (
@@ -72,7 +72,7 @@ function NewFeed() {
             </div>
           ))}
         </div>
-      )}
+      )} */}
 
       <Post />
 

@@ -4,7 +4,11 @@ import { addComment } from "../../redux/postSlice";
 import ReactQuill from "react-quill";
 import { commentModules } from "../../constants/modules";
 import { useDispatch, useSelector } from "react-redux";
-import { createPostComment, getPostComment } from "../../redux/commentSlice";
+import {
+  createPostComment,
+  getReplyComments,
+  updateCommentReaction,
+} from "../../redux/commentSlice";
 
 const styleModules = `
 .ql-toolbar {
@@ -17,14 +21,20 @@ const styleModules = `
 }
 .ql-editor {
     border-top: 0.5px solid #ccc;
-    /* outline: none; */
-}`;
+},
+.ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0;
+}
+`;
 
 function Comment({ postID, userID }) {
   const dispatch = useDispatch();
   const [contentValue, setContentValue] = useState("");
+  const [replyValue, setReplyValue] = useState("");
+  const [indexReply, setIndexReply] = useState([null, false]);
   const [isOption, setIsOption] = useState({ status: false, index: null });
   const commentStore = useSelector((state) => state.commentStore?.comments);
+  const replyStore = useSelector((state) => state.commentStore?.replyComments);
 
   const handleComment = () => {
     dispatch(createPostComment({ postID, content: contentValue }));
@@ -36,67 +46,22 @@ function Comment({ postID, userID }) {
     else setIsOption({ status: !isOption.status, index });
   };
 
-  useEffect(() => {
-    dispatch(getPostComment(postID));
+  const handleReactionComment = (commentID, likes) => {
+    dispatch(updateCommentReaction({ postID, userID, commentID, likes }));
+  };
 
-    // return () => {
-    //   dispatch()
-    // }
-  }, []);
+  const handleShowReply = (commentID) => {
+    indexReply[0] === commentID
+      ? setIndexReply([commentID, !indexReply[1]])
+      : setIndexReply([commentID, true]);
+  };
+
+  const handleGetReply = (commentID) => {
+    dispatch(getReplyComments({ postID, commentID }));
+  };
 
   return (
-    <div className="">
-      {commentStore.length > 0 ? (
-        commentStore.map((comment, index) => (
-          <div
-            key={comment._id}
-            className="m-[10px] flex justify-between items-center"
-          >
-            <div className="flex gap-x-[10px]">
-              <div>
-                <img
-                  className="w-8 h-8 rounded-full"
-                  src={comment.author?.avatar || "/images/dev-icon.webp"}
-                  alt=""
-                />
-              </div>
-              <div className=" flex-1 text-sm">
-                <div className="bg-gray-200 rounded-md">
-                  <p className="p-[10px] pb-0 font-medium">
-                    {comment.author?.username}
-                  </p>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: comment.content }}
-                    className="post p-[10px]"
-                  ></div>
-                </div>
-                <div className="flex gap-x-2 text-xs">
-                  <p className="cursor-pointer font-medium hover:text-sky-700 transition-colors duration-200">Thích</p>
-                  <p className="cursor-pointer font-medium hover:text-emerald-700 transition-colors duration-200">Phản hồi</p>
-                </div>
-              </div>
-            </div>
-            <div
-              onClick={() => handleToggleIsOption(index)}
-              className="relative"
-            >
-              <i className="rounded hover:bg-gray-200 transition-colors duration-200 px-3 text-lg fa-solid fa-ellipsis-vertical"></i>
-              {comment.author?._id === userID && isOption.status && isOption.index === index && (
-                <div className="absolute right-8 bg-gray-200 rounded w-[100px] p-2">
-                  <p className="hover:text-sky-600 transition-colors duration-200 cursor-pointer">
-                    Chỉnh sửa
-                  </p>
-                  <p className="hover:text-sky-300 transition-colors duration-200 cursor-pointer">
-                    Xóa
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        ))
-      ) : (
-        <p className="ml-2">Chưa có bình luận nào!</p>
-      )}
+    <div className="h-full">
       <div className={`relative bg-gray-100`}>
         <ReactQuill
           modules={commentModules}
@@ -114,6 +79,148 @@ function Comment({ postID, userID }) {
             <i className="fa-solid fa-paper-plane"></i>
           </button>
         </div>
+      </div>
+      <div className="h-[80%] overflow-y-scroll no-scrollbar">
+        {commentStore.length > 0 ? (
+          commentStore.map((comment, index) => (
+            <div
+              key={comment._id}
+              className="m-[10px] flex justify-between items-center"
+            >
+              <div className="flex basis-[90%] gap-x-[10px]">
+                <div>
+                  <img
+                    className="w-8 h-8 rounded-full"
+                    src={comment.author?.avatar || "/images/dev-icon.webp"}
+                    alt=""
+                  />
+                </div>
+                <div className="flex-1 text-sm">
+                  <div className="bg-gray-200 rounded-md">
+                    <p className="p-[10px] pb-0 font-medium">
+                      {comment.author?.username || "(deleted)"}
+                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: comment.content }}
+                      className="post p-[10px]"
+                    ></div>
+                  </div>
+                  <div className="flex gap-x-2 text-xs">
+                    <p
+                      className={`cursor-pointer font-medium hover:text-sky-700 transition-colors duration-200 select-none ${
+                        comment.likes.includes(userID) && "text-blue-500"
+                      }`}
+                      onClick={() =>
+                        handleReactionComment(comment._id, comment.likes)
+                      }
+                    >
+                      Thích {`(${comment.like_count})`}
+                    </p>
+                    <p
+                      className="cursor-pointer font-medium hover:text-emerald-700 transition-colors duration-200 select-none"
+                      onClick={() => {
+                        handleShowReply(comment._id);
+                        handleGetReply(comment._id);
+                      }}
+                    >
+                      Phản hồi
+                    </p>
+                    {indexReply[1] &&
+                      replyStore.comments?.map((reply) => (
+                        <div
+                          key={reply._id}
+                          className="m-[10px] flex justify-between items-center"
+                        >
+                          <div className="flex w-full gap-x-[10px]">
+                            <div>
+                              <img
+                                className="w-8 h-8 rounded-full"
+                                src={
+                                  reply.author?.avatar ||
+                                  "/images/dev-icon.webp"
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <div className="flex-1 text-sm">
+                              <div className="bg-gray-200 rounded-md">
+                                <p className="p-[10px] pb-0 font-medium">
+                                  {reply.author?.username || "(deleted)"}
+                                </p>
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: reply.content,
+                                  }}
+                                  className="post p-[10px]"
+                                ></div>
+                              </div>
+                              <div className="flex gap-x-2 text-xs">
+                                <p
+                                  className={`cursor-pointer font-medium hover:text-sky-700 transition-colors duration-200 select-none ${
+                                    comment.likes.includes(userID) &&
+                                    "text-blue-500"
+                                  }`}
+                                  onClick={() =>
+                                    handleReactionComment(
+                                      reply._id,
+                                      reply.likes
+                                    )
+                                  }
+                                >
+                                  Thích {`(${comment.like_count})`}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                  {indexReply[0] === comment._id && indexReply[1] && (
+                    <div className="relative w-full bg-gray-100 mt-2">
+                      <ReactQuill
+                        modules={commentModules}
+                        placeholder="Viết gì đó đi..."
+                        className={`editor-input border-gray-300 border-[0.5px]`}
+                        value={replyValue}
+                        onChange={setReplyValue}
+                      />
+                      <style>{styleModules}</style>
+                      <div className="flex justify-end gap-x-3 p-[10px]">
+                        <button
+                          onClick={handleComment}
+                          className="rounded shadow-md w-[40px] py-2 bg-sky-500 text-white hover:bg-white hover:text-sky-500 transition-colors duration-300"
+                        >
+                          <i className="fa-solid fa-paper-plane text-[10px]"></i>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Nếu là bình luận của người dùng thì hiện */}
+              {comment.author?._id === userID && (
+                <div
+                  onClick={() => handleToggleIsOption(index)}
+                  className="relative self-start"
+                >
+                  <i className="hover:bg-gray-200 transition-colors duration-200 rounded-md px-3 py-2 text-sm fa-solid fa-ellipsis-vertical"></i>
+                  {isOption.status && isOption.index === index && (
+                    <div className="absolute right-8 bg-gray-200 rounded w-[100px] p-2">
+                      <p className="hover:text-sky-600 transition-colors duration-200 cursor-pointer">
+                        Chỉnh sửa
+                      </p>
+                      <p className="hover:text-sky-300 transition-colors duration-200 cursor-pointer">
+                        Xóa
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className="ml-2">Chưa có bình luận nào!</p>
+        )}
       </div>
     </div>
   );

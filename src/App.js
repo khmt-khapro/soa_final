@@ -76,8 +76,8 @@ function App() {
             <Route path="edit-profile" element={<EditProfile />} />
             <Route path="custom" element={<Custom />} />
           </Route>
+          <Route path="/post/:postID" element={<PostDetail />} />
         </Route>
-        <Route path="/post/:postID" element={<PostDetail />} />
         <Route path="activate" element={<ActivateAccount />} />
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
